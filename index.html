@@ -6,9 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Park Board">
+<meta name="apple-mobile-web-app-title" content="Bret and Nicole WDW Park Board">
 <meta name="theme-color" content="#1b1f4a">
-<title>Park Board</title>
+<title>Bret and Nicole WDW Park Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -30,7 +30,7 @@ h1,h2,h3,.num{font-family:Outfit,system-ui,sans-serif}
 button{font:inherit;color:inherit}
 .top{position:sticky;top:0;z-index:5;background:var(--chrome);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) max(4vw,14px) 0}
 .bar{display:flex;align-items:center;gap:10px;max-width:1240px;margin:auto}
-.bar h1{font-size:22px;margin:0;font-weight:700;letter-spacing:.2px;flex:1}
+.bar h1{font-size:19px;line-height:1.15;margin:0;font-weight:700;letter-spacing:.2px;flex:1}.bar h1 span{white-space:nowrap}
 .stamp{font-size:13px;color:#c9ccf5;white-space:nowrap}
 .refresh{background:#ffffff1f;border:0;border-radius:999px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer}
 .refresh svg{width:20px;height:20px}
@@ -53,6 +53,14 @@ main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
 .hero .sub{font-size:14px;opacity:.88;margin-top:2px}
 .tonight{margin-top:12px;background:#00000029;border-radius:12px;padding:10px 12px;font-size:15px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
 .tonight b{font-family:Outfit;font-size:18px;white-space:nowrap}
+.marq{margin-top:12px;background:#00000029;border-radius:12px;padding:10px 12px}
+.marq .lbl{font-size:12.5px;opacity:.85;font-weight:600;margin-bottom:2px}
+.marq .m{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:3px 0;font-size:15px}
+.marq .m b{font-family:Outfit;font-size:19px;white-space:nowrap}
+.marq .m i{font-style:normal;opacity:.8;font-size:14px;white-space:nowrap}
+.marq .m .gone{opacity:.5;text-decoration:line-through}
+.closed{padding:18px 16px;color:var(--mute);text-align:center;font-size:15px}
+.closed b{display:block;color:var(--ink);font-family:Outfit;font-size:19px;margin-bottom:2px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}
 .stats div{padding:12px 14px}.stats div+div{border-left:1px solid var(--line)}
 .stats .num{font-size:26px;font-weight:700;line-height:1.1}
@@ -101,7 +109,7 @@ main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
 <body>
 <header class="top">
   <div class="bar">
-    <h1>Park Board</h1>
+    <h1>Bret and Nicole <span>WDW Park Board</span></h1>
     <span class="stamp" id="stamp">Loading…</span>
     <button class="refresh" id="refresh" aria-label="Refresh now"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg></button>
   </div>
@@ -114,10 +122,10 @@ const API='https://api.themeparks.wiki/v1';
 const DEST='e957da41-3552-4cf6-b636-5babc5cbc4e5';
 const TZ='America/New_York';
 const PARKS=[
- {k:'mk',id:'75ea578a-adc8-4116-a54d-dccb60765ef9',short:'Magic Kingdom',name:'Magic Kingdom',c:'#3f51d8'},
- {k:'ep',id:'47f90d2c-e191-4239-a466-5892ef59a88b',short:'EPCOT',name:'EPCOT',c:'#8a3fc7'},
- {k:'hs',id:'288747d1-8b4f-4a64-867e-ea7c9b27bad8',short:'Hollywood Studios',name:'Hollywood Studios',c:'#c2364f'},
- {k:'ak',id:'1c84a229-8862-4648-9c71-378ddd2c7693',short:'Animal Kingdom',name:'Animal Kingdom',c:'#1f7a5a'},
+ {k:'mk',id:'75ea578a-adc8-4116-a54d-dccb60765ef9',short:'Magic Kingdom',name:'Magic Kingdom',c:'#3f51d8',marquee:[{re:/^Happily Ever After/i,label:'Happily Ever After'},{re:/Dream the Night Away/i,label:'Dream the Night Away'}],events:[[8,10,"Mickey's Not-So-Scary Halloween Party"],[11,12,"Mickey's Very Merry Christmas Party"]]},
+ {k:'ep',id:'47f90d2c-e191-4239-a466-5892ef59a88b',short:'EPCOT',name:'EPCOT',c:'#8a3fc7',marquee:[{re:/^Luminous/i,label:'Luminous The Symphony of Us'}]},
+ {k:'hs',id:'288747d1-8b4f-4a64-867e-ea7c9b27bad8',short:'Hollywood Studios',name:'Hollywood Studios',c:'#c2364f',marquee:[{re:/^Fantasmic/i,label:'Fantasmic!'}],events:[[11,12,'Disney Jollywood Nights']]},
+ {k:'ak',id:'1c84a229-8862-4648-9c71-378ddd2c7693',short:'Animal Kingdom',name:'Animal Kingdom',c:'#1f7a5a',marquee:[{re:/^Tree of Life Awakenings/i,label:'Tree of Life Awakenings'}]},
  {k:'tl',id:'b070cbc5-feaa-4b87-a8c1-f94cca037a18',short:'Typhoon Lagoon',name:'Typhoon Lagoon',c:'#0f86b5'},
  {k:'bb',id:'ead53ea5-22e5-4095-9a83-8c29300d7c63',short:'Blizzard Beach',name:'Blizzard Beach',c:'#2b7fd0'}
 ];
@@ -155,15 +163,33 @@ const byPark=id=>(st.live||[]).filter(e=>e.parkId===id);
 function todaySched(id,date=ymd(new Date())){return (st.sched[id]||[]).filter(s=>s.date===date)}
 function hoursLine(id,date){
   const s=todaySched(id,date);const op=s.find(x=>x.type==='OPERATING');
-  const extras=s.filter(x=>x.type!=='OPERATING').map(x=>({label:x.description||cleanType(x.type),txt:`${fmtT(x.openingTime)}–${fmtT(x.closingTime)}`}));
+  const extras=s.filter(x=>x.type!=='OPERATING').map(x=>({label:/special ticketed/i.test(x.description||'')?eventName(id,x.date):(x.description||cleanType(x.type)),txt:`${fmtT(x.openingTime)}–${fmtT(x.closingTime)}`}));
   return {op,main:op?`${fmtT(op.openingTime)} – ${fmtT(op.closingTime)}`:(s.length?'':'Closed / not posted'),extras,purchases:op?.purchases||[]};
 }
 const cleanType=t=>({TICKETED_EVENT:'Ticketed event',EXTRA_HOURS:'Extra hours',INFO:'Info',CLOSED:'Closed'}[t]||t);
+const parkOf=id=>PARKS.find(p=>p.id===id);
+/* Special ticketed event names: the schedule only says "Special Ticketed Event", so read the
+   name from that park's party shows ("… at Mickey's Very Merry Christmas Party"), falling back
+   to the park's known seasonal event for that month. */
+function eventName(id,date){
+  const p=parkOf(id),m=+date.slice(5,7);
+  const fromFeed=[...new Set(byPark(id).map(e=>(String(e.name).match(/ at ((?:Disney |Mickey)[^]*?(?:Party|Nights?|Bash|After Hours))$/i)||[])[1]).filter(Boolean).map(cleanName))];
+  const season=(p?.events||[]).find(([a,b])=>m>=a&&m<=b)?.[2];
+  if(season&&fromFeed.some(n=>n.toLowerCase().replace(/[’']/g,'')===season.toLowerCase().replace(/[’']/g,'')))return season;
+  if(fromFeed.length===1)return fromFeed[0];
+  return season||'Special Ticketed Event';
+}
+/* Open = inside regular hours, Early Entry or Extended Evening (not a separately ticketed party). */
+function windows(id){return (st.sched[id]||[]).filter(x=>x.type==='OPERATING'||/early entry|extended evening/i.test(x.description||''))}
+function isOpen(id){const now=Date.now();return windows(id).some(x=>now>=+new Date(x.openingTime)&&now<+new Date(x.closingTime))}
+function nextOpen(id){const now=Date.now();return (st.sched[id]||[]).filter(x=>x.type==='OPERATING'&&+new Date(x.openingTime)>now).sort((a,b)=>new Date(a.openingTime)-new Date(b.openingTime))[0]}
+function nextOpenTxt(id){const n=nextOpen(id);if(!n)return '';const d=n.date===ymd(new Date())?'today':n.date===ymd(new Date(Date.now()+864e5))?'tomorrow':dayName(n.date);return `Opens ${d} at ${fmtT(n.openingTime)}`}
 function openStatus(id){
-  const {op}=hoursLine(id);if(!op)return 'No hours posted today';
-  const now=Date.now(),o=+new Date(op.openingTime),c=+new Date(op.closingTime);
+  const {op}=hoursLine(id);const now=Date.now();
   const dur=ms=>{const m=Math.round(ms/60e3),h=Math.floor(m/60);return h?`${h}h ${m%60}m`:`${m}m`};
-  if(now<o)return `Opens in ${dur(o-now)}`;if(now<c)return `Open · closes in ${dur(c-now)}`;return 'Closed for the day';
+  if(isOpen(id)){const end=Math.max(...windows(id).filter(x=>now>=+new Date(x.openingTime)&&now<+new Date(x.closingTime)).map(x=>+new Date(x.closingTime)));return `Open · closes in ${dur(end-now)}`}
+  if(op&&now<+new Date(op.openingTime))return `Opens in ${dur(+new Date(op.openingTime)-now)}`;
+  return 'Closed'+(nextOpenTxt(id)?' · '+nextOpenTxt(id):'');
 }
 const wait=e=>e.queue?.STANDBY?.waitTime??null;
 function trend(e){
@@ -184,17 +210,23 @@ function llTags(e){
   return out.join('');
 }
 const isMeet=n=>/^(Meet|Greet)|Character|Meet /i.test(n);
-function shows(id,{meets=st.meets}={}){
-  return byPark(id).filter(e=>e.entityType==='SHOW'&&(e.showtimes||[]).length&&(meets||!isMeet(e.name)));
+const marqueeDef=(p,e)=>!/ at /i.test(e.name)&&(p.marquee||[]).find(m=>m.re.test(cleanName(e.name)));
+function marquee(p){
+  const ents=byPark(p.id).filter(e=>e.entityType==='SHOW');
+  return (p.marquee||[]).map(m=>{
+    const e=ents.find(x=>!/ at /i.test(x.name)&&m.re.test(cleanName(x.name)));
+    const ts=(e?.showtimes||[]).filter(s=>ymd(new Date(s.startTime))===ymd(new Date())).map(s=>s.startTime).sort();
+    return {label:m.label,ts};
+  });
 }
-function nightShows(id){
-  const out=[];
-  for(const e of shows(id,{meets:false}))for(const s of e.showtimes){
-    const h=+new Date(s.startTime).toLocaleString('en-US',{timeZone:TZ,hour:'numeric',hour12:false});
-    if(s.type==='Performance Time'&&h>=19&&ymd(new Date(s.startTime))===ymd(new Date()))out.push({name:cleanName(e.name),t:s.startTime});
-  }
-  const m=new Map();out.sort((a,b)=>new Date(a.t)-new Date(b.t)).forEach(x=>{if(!m.has(x.name))m.set(x.name,[]);m.get(x.name).push(x.t)});
-  return [...m].map(([name,ts])=>({name,ts}));
+function shows(id,{meets=st.meets}={}){
+  const p=parkOf(id);
+  return byPark(id).filter(e=>e.entityType==='SHOW'&&(e.showtimes||[]).length&&(meets||!isMeet(e.name))&&!marqueeDef(p,e));
+}
+const timeChip=(t,cls)=>`<span class="${cls}">${fmtT(t)}</span>`;
+function marqueeBlock(p){
+  const ms=marquee(p);if(!ms.length)return '';const now=Date.now();
+  return `<div class="marq"><div class="lbl">Tonight’s nighttime spectacular${ms.length>1?'s':''}</div>${ms.map(m=>`<div class="m"><span>${esc(m.label)}</span>${m.ts.length?`<b>${m.ts.map(t=>timeChip(t,+new Date(t)<now-20*60e3?'gone':'')).join(', ')}</b>`:'<i>Not scheduled tonight</i>'}</div>`).join('')}</div>`;
 }
 
 /* ---------- rendering ---------- */
@@ -208,14 +240,15 @@ function stamp(){
   $('#stamp').textContent=m<1?'Updated just now':`Updated ${m} min ago`;
 }
 function hero(p,{link=false}={}){
-  const h=hoursLine(p.id);const ns=nightShows(p.id);
+  const h=hoursLine(p.id);
   return `<div class="hero${link?' click':''}" style="--pc:${p.c}" ${link?`data-go="${p.k}"`:''}>
     <h2>${p.name}</h2>
     <div class="hrs">${h.main}</div>
     <div class="sub">${openStatus(p.id)}${h.extras.map(x=>` · ${esc(x.label)} ${x.txt}`).join('')}</div>
-    ${ns.length?`<div class="tonight"><span>Tonight</span>${ns.slice(0,3).map(s=>`<span><b>${s.ts.map(fmtT).join(', ')}</b> ${esc(s.name)}</span>`).join('')}</div>`:''}
+    ${marqueeBlock(p)}
   </div>`;
 }
+const closedMsg=p=>`<div class="closed"><b>Park closed</b>Ride times will appear when ${p.name} opens.${nextOpenTxt(p.id)?' '+nextOpenTxt(p.id)+'.':''}</div>`;
 function rideRow(e,p){
   const w=wait(e);const op=e.status==='OPERATING';const fav=st.favs.has(e.id);
   const statusTag=e.status==='DOWN'?'<span class="tag down">Temporarily down</span>':e.status==='REFURBISHMENT'?'<span class="tag down">Refurbishment</span>':e.status==='CLOSED'?'<span class="tag">Closed</span>':'';
@@ -230,6 +263,7 @@ function overview(list){
     const avg=ws.length?Math.round(ws.reduce((a,b)=>a+b,0)/ws.length):null;
     const favs=rides.filter(e=>st.favs.has(e.id));
     const top=(favs.length?favs:open.filter(e=>wait(e)!=null)).sort((a,b)=>(wait(b)??-1)-(wait(a)??-1)).slice(0,favs.length?8:4);
+    if(!isOpen(p.id))return `<section class="card">${hero(p,{link:true})}${closedMsg(p)}<div class="row"><span class="nm"></span><button class="tog" data-go="${p.k}">${p.short} shows &amp; hours →</button></div></section>`;
     return `<section class="card">${hero(p,{link:true})}
       <div class="stats"><div><span class="num">${open.length}</span><small>rides open</small></div>
       <div><span class="num">${avg??'—'}</span><small>avg wait</small></div>
@@ -239,6 +273,7 @@ function overview(list){
     </section>`}).join('')}</div>`;
 }
 function ridesView(p){
+  if(!isOpen(p.id))return `<div class="card">${closedMsg(p)}</div>`;
   let rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
   if(st.openOnly)rides=rides.filter(e=>e.status==='OPERATING'||e.status==='DOWN');
   if(st.q)rides=rides.filter(e=>e.name.toLowerCase().includes(st.q));
@@ -265,18 +300,18 @@ function showsView(p){
       return `<span class="t${past?' past':''}${isN?' next':''}">${lbl}</span>`}).join('');
     return `<div class="row"><div class="nm">${esc(cleanName(e.name))}<div class="times">${chips}</div></div></div>`;
   };
-  const ns=nightShows(p.id);
+  const ms=marquee(p);
   return `<div class="tools"><input type="search" id="q" placeholder="Search shows" value="${esc(st.q)}" autocomplete="off">
     <label class="tog"><input type="checkbox" id="meets" ${st.meets?'checked':''}> Character meets</label></div>
-    ${ns.length?`<div class="sect">Evening shows tonight</div><div class="card">${ns.map(s=>`<div class="row"><div class="nm">${esc(s.name)}</div><div class="times">${s.ts.map(t=>`<span class="t${+new Date(t)<now?' past':' next'}">${fmtT(t)}</span>`).join('')}</div></div>`).join('')}</div>`:''}
-    <div class="sect">All of today’s show times</div>
+    ${ms.length?`<div class="sect">Nighttime spectacular${ms.length>1?'s':''}</div><div class="card">${ms.map(m=>`<div class="row"><div class="nm">${esc(m.label)}<div class="times">${m.ts.length?m.ts.map(t=>`<span class="t${+new Date(t)<now?' past':' next'}">${fmtT(t)}</span>`).join(''):'<span class="tag">Not scheduled tonight</span>'}</div></div></div>`).join('')}</div>`:''}
+    <div class="sect">Other shows today</div>
     <div class="card">${list.length?list.map(row).join(''):'<div class="empty">No show times posted for today.</div>'}</div>`;
 }
 function hoursView(list){
   const days=[...new Set(list.flatMap(p=>(st.sched[p.id]||[]).map(s=>s.date)))].sort().filter(d=>d>=ymd(new Date())).slice(0,10);
   return list.map(p=>`<div class="sect">${list.length>1?p.name:'Next 10 days'}</div><div class="card" style="--pc:${p.c}"><table class="hrsT"><tbody>${days.map(d=>{
     const h=hoursLine(p.id,d);const pass=h.purchases.find(x=>x.type==='PACKAGE');
-    return `<tr class="${d===ymd(new Date())?'today':''}"><td>${d===ymd(new Date())?'Today':dayName(d)}</td><td>${h.main||'—'}${h.extras.map(x=>`<span class="x">${esc(x.label)} ${x.txt}</span>`).join('')}${pass?.price?`<span class="x">LL Multi Pass ${pass.price.formatted}${pass.available===false?' (sold out)':''}</span>`:''}</td></tr>`}).join('')}</tbody></table></div>`).join('');
+    return `<tr class="${d===ymd(new Date())?'today':''}"><td>${d===ymd(new Date())?'Today':dayName(d)}</td><td>${h.main||'—'}${h.extras.map(x=>`<span class="x">${esc(x.label)} ${x.txt}</span>`).join('')}${d===ymd(new Date())?marquee(p).filter(m=>m.ts.length).map(m=>`<span class="x">${esc(m.label)} ${m.ts.map(fmtT).join(', ')}</span>`).join(''):''}${pass?.price?`<span class="x">LL Multi Pass ${pass.price.formatted}${pass.available===false?' (sold out)':''}</span>`:''}</td></tr>`}).join('')}</tbody></table></div>`).join('');
 }
 function render(){
   chips();stamp();
