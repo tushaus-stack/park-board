@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Park Board">
+<meta name="theme-color" content="#1b1f4a">
+<title>Park Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: friendly, glanceable, built to be checked twenty times a day in a queue.
+   IDEA: the in-park tip board — big wait numbers on a lit board, one per park.
+   PICTURE: the board itself — each park gets a coloured header band with hours and tonight's spectacular.
+   COLOUR and TYPE: midnight-indigo chrome, per-park accents, wait pills on a teal→gold→coral heat scale; Outfit numerals + Inter.
+   LAYOUT: sticky header + park chips, then the board; single column on phones, two columns on wide screens. */
+:root{color-scheme:light dark;
+--bg:light-dark(#f4f3fb,#0d0f24);--card:light-dark(#ffffff,#171a38);--ink:light-dark(#171a3a,#eef0ff);
+--mute:light-dark(#5e6288,#a3a8d4);--line:light-dark(#e3e2f2,#272b55);--chrome:#1b1f4a;
+--short:light-dark(#0f8f86,#2fc7b9);--mid:light-dark(#b07a00,#f2b631);--long:light-dark(#d2453a,#ff7a6b);
+--accent:#5b4bdb}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3,.num{font-family:Outfit,system-ui,sans-serif}
+button{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:var(--chrome);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) max(4vw,14px) 0}
+.bar{display:flex;align-items:center;gap:10px;max-width:1240px;margin:auto}
+.bar h1{font-size:22px;margin:0;font-weight:700;letter-spacing:.2px;flex:1}
+.stamp{font-size:13px;color:#c9ccf5;white-space:nowrap}
+.refresh{background:#ffffff1f;border:0;border-radius:999px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer}
+.refresh svg{width:20px;height:20px}
+.refresh.spin svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.refresh.spin svg{animation:none}}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0;max-width:1240px;margin:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;border-radius:999px;padding:10px 16px;min-height:44px;background:#ffffff14;color:#e6e8ff;font-weight:600;cursor:pointer}
+.chip[aria-pressed=true]{background:#fff;color:var(--chrome)}
+.chip:focus-visible,.seg button:focus-visible,.refresh:focus-visible,.star:focus-visible{outline:3px solid #ffd76a;outline-offset:2px}
+main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
+.banner{background:light-dark(#fff3d6,#3a2e0c);color:light-dark(#6b4a00,#ffd98a);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px}
+.card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 6px 20px -12px #1b1f4a55}
+.hero{background:var(--pc);color:#fff;padding:18px 18px 16px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#ffffff38,#fff0 70%)}
+.hero h2{margin:0;font-size:clamp(24px,6vw,34px);line-height:1.05;font-weight:700;text-wrap:balance}
+.hero .hrs{font-size:17px;margin-top:6px;font-weight:600}
+.hero .sub{font-size:14px;opacity:.88;margin-top:2px}
+.tonight{margin-top:12px;background:#00000029;border-radius:12px;padding:10px 12px;font-size:15px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.tonight b{font-family:Outfit;font-size:18px;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.stats div{padding:12px 14px}.stats div+div{border-left:1px solid var(--line)}
+.stats .num{font-size:26px;font-weight:700;line-height:1.1}
+.stats small{display:block;color:var(--mute);font-size:13px}
+.toplist{padding:6px 0 8px}
+.seg{display:flex;background:var(--card);border-radius:14px;padding:4px;gap:4px;margin:14px 0;box-shadow:0 1px 0 var(--line)}
+.seg button{flex:1;border:0;background:none;border-radius:10px;min-height:44px;font-weight:600;color:var(--mute);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--pc,var(--accent));color:#fff}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tools input[type=search]{flex:1 1 200px;font-size:16px;padding:10px 14px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.tog{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mute);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:44px;cursor:pointer;white-space:nowrap}
+.tog input{width:18px;height:18px;accent-color:var(--pc,var(--accent))}
+.row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .nm{flex:1;font-weight:600;line-height:1.3}
+.row .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;font-weight:500}
+.tag{font-size:12.5px;padding:2px 8px;border-radius:999px;background:light-dark(#eeedf8,#232750);color:var(--mute);white-space:nowrap}
+.tag.ll{background:light-dark(#e8e4ff,#2c2766);color:light-dark(#4a3bc4,#c4bbff)}
+.tag.down{background:light-dark(#ffe3df,#4a1d1a);color:var(--long)}
+.tag.up{color:var(--short)}
+.wait{flex:none;width:62px;text-align:center;border-radius:12px;padding:6px 0 4px;color:#fff;font-family:Outfit;line-height:1}
+.wait .num{font-size:26px;font-weight:800;display:block}
+.wait small{font-size:11px;opacity:.9}
+.w-s{background:var(--short)}.w-m{background:var(--mid)}.w-l{background:var(--long)}
+.w-x{background:light-dark(#d9d8ea,#2a2e57);color:var(--mute)}
+.w-x .num{font-size:15px;padding:5px 0 3px}
+.star{flex:none;border:0;background:none;width:36px;height:44px;margin:-6px -4px -6px -8px;cursor:pointer;color:light-dark(#c7c6dc,#3d4170);font-size:22px;line-height:1}
+.star[aria-pressed=true]{color:#f2b631}
+.times{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.t{font-family:Outfit;font-weight:600;font-size:14px;padding:3px 9px;border-radius:8px;background:light-dark(#eeedf8,#232750);white-space:nowrap}
+.t.past{opacity:.38;text-decoration:line-through}
+.t.next{background:var(--pc,var(--accent));color:#fff}
+.sect{font-family:Outfit;font-size:15px;font-weight:700;color:var(--mute);margin:18px 2px 8px}
+.hrsT{width:100%;border-collapse:collapse;font-size:15px}
+.hrsT td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top}
+.hrsT tr:first-child td{border-top:0}
+.hrsT td:first-child{font-weight:600;width:38%}
+.hrsT .x{display:block;color:var(--mute);font-size:13.5px}
+.today td:first-child{color:var(--pc,var(--accent))}
+.empty{padding:22px 16px;color:var(--mute);text-align:center}
+.foot{color:var(--mute);font-size:13px;text-align:center;margin-top:26px}
+.foot a{color:inherit}
+.click{cursor:pointer}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <h1>Park Board</h1>
+    <span class="stamp" id="stamp">Loading…</span>
+    <button class="refresh" id="refresh" aria-label="Refresh now"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg></button>
+  </div>
+  <nav class="chips" id="chips" aria-label="Parks"></nav>
+</header>
+<main id="main"><div class="empty">Loading live park data…</div></main>
+<script>
+{
+const API='https://api.themeparks.wiki/v1';
+const DEST='e957da41-3552-4cf6-b636-5babc5cbc4e5';
+const TZ='America/New_York';
+const PARKS=[
+ {k:'mk',id:'75ea578a-adc8-4116-a54d-dccb60765ef9',short:'Magic Kingdom',name:'Magic Kingdom',c:'#3f51d8'},
+ {k:'ep',id:'47f90d2c-e191-4239-a466-5892ef59a88b',short:'EPCOT',name:'EPCOT',c:'#8a3fc7'},
+ {k:'hs',id:'288747d1-8b4f-4a64-867e-ea7c9b27bad8',short:'Hollywood Studios',name:'Hollywood Studios',c:'#c2364f'},
+ {k:'ak',id:'1c84a229-8862-4648-9c71-378ddd2c7693',short:'Animal Kingdom',name:'Animal Kingdom',c:'#1f7a5a'},
+ {k:'tl',id:'b070cbc5-feaa-4b87-a8c1-f94cca037a18',short:'Typhoon Lagoon',name:'Typhoon Lagoon',c:'#0f86b5'},
+ {k:'bb',id:'ead53ea5-22e5-4095-9a83-8c29300d7c63',short:'Blizzard Beach',name:'Blizzard Beach',c:'#2b7fd0'}
+];
+const LIVE_MS=5*60e3, SCHED_MS=30*60e3;
+const store={get(k,d){try{const v=localStorage.getItem('pb_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('pb_'+k,JSON.stringify(v))}catch(e){}}};
+const st={view:store.get('view','all'),tab:store.get('tab','rides'),q:'',openOnly:store.get('openOnly',true),sort:store.get('sort','wait'),meets:store.get('meets',false),
+  favs:new Set(store.get('favs',[])),live:null,sched:{},liveAt:0,schedAt:0,err:''};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtT=iso=>iso?new Date(iso).toLocaleTimeString('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'}).replace(':00','').replace(' AM','a').replace(' PM','p'):'';
+const ymd=d=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+const dayName=s=>{const d=new Date(s+'T12:00:00Z');return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'})};
+const cleanName=n=>String(n).replace(/[®™]/g,'').replace(/^Disney's /,'').trim();
+const wclass=w=>w==null?'w-x':w<=20?'w-s':w<=50?'w-m':'w-l';
+
+async function getJSON(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.json()}
+async function load(force){
+  const btn=$('#refresh');btn.classList.add('spin');
+  const now=Date.now();
+  try{
+    const jobs=[];
+    if(force||now-st.liveAt>LIVE_MS-5e3)jobs.push(getJSON(`${API}/entity/${DEST}/live`).then(d=>{st.live=d.liveData||[];st.liveAt=Date.now();store.set('live',{at:st.liveAt,d:st.live})}));
+    if(force||now-st.schedAt>SCHED_MS)jobs.push(Promise.all(PARKS.map(p=>getJSON(`${API}/entity/${p.id}/schedule`).then(d=>{st.sched[p.id]=d.schedule||[]}))).then(()=>{st.schedAt=Date.now();store.set('sched',{at:st.schedAt,d:st.sched})}));
+    await Promise.all(jobs);st.err='';
+  }catch(e){
+    st.err='Couldn’t reach the live feed — showing the last data saved on this phone.';
+    if(!st.live){const c=store.get('live',null);if(c){st.live=c.d;st.liveAt=c.at}}
+    if(!Object.keys(st.sched).length){const c=store.get('sched',null);if(c){st.sched=c.d;st.schedAt=c.at}}
+  }
+  btn.classList.remove('spin');render();
+}
+
+/* ---------- data helpers ---------- */
+const byPark=id=>(st.live||[]).filter(e=>e.parkId===id);
+function todaySched(id,date=ymd(new Date())){return (st.sched[id]||[]).filter(s=>s.date===date)}
+function hoursLine(id,date){
+  const s=todaySched(id,date);const op=s.find(x=>x.type==='OPERATING');
+  const extras=s.filter(x=>x.type!=='OPERATING').map(x=>({label:x.description||cleanType(x.type),txt:`${fmtT(x.openingTime)}–${fmtT(x.closingTime)}`}));
+  return {op,main:op?`${fmtT(op.openingTime)} – ${fmtT(op.closingTime)}`:(s.length?'':'Closed / not posted'),extras,purchases:op?.purchases||[]};
+}
+const cleanType=t=>({TICKETED_EVENT:'Ticketed event',EXTRA_HOURS:'Extra hours',INFO:'Info',CLOSED:'Closed'}[t]||t);
+function openStatus(id){
+  const {op}=hoursLine(id);if(!op)return 'No hours posted today';
+  const now=Date.now(),o=+new Date(op.openingTime),c=+new Date(op.closingTime);
+  const dur=ms=>{const m=Math.round(ms/60e3),h=Math.floor(m/60);return h?`${h}h ${m%60}m`:`${m}m`};
+  if(now<o)return `Opens in ${dur(o-now)}`;if(now<c)return `Open · closes in ${dur(c-now)}`;return 'Closed for the day';
+}
+const wait=e=>e.queue?.STANDBY?.waitTime??null;
+function trend(e){
+  const f=e.forecast;const w=wait(e);if(!f||w==null)return '';
+  const now=Date.now();const nxt=f.find(x=>+new Date(x.time)>now+30*60e3);
+  if(!nxt||nxt.waitTime==null)return '';const d=nxt.waitTime-w;
+  if(d<=-10)return `<span class="tag up">↓ ~${nxt.waitTime} by ${fmtT(nxt.time)}</span>`;
+  if(d>=15)return `<span class="tag">↑ ~${nxt.waitTime} by ${fmtT(nxt.time)}</span>`;return '';
+}
+function llTags(e){
+  const q=e.queue||{},out=[];
+  const rt=q.RETURN_TIME,pr=q.PAID_RETURN_TIME,sr=q.SINGLE_RIDER,bg=q.BOARDING_GROUP;
+  const rtTxt=(x,lbl)=>x.state==='AVAILABLE'&&x.returnStart?`${lbl} ${fmtT(x.returnStart)}`:x.state==='FINISHED'?`${lbl} gone`:x.state==='TEMP_FULL'?`${lbl} full now`:'';
+  if(rt){const t=rtTxt(rt,'LL');if(t)out.push(`<span class="tag ll">${t}</span>`)}
+  if(pr){const t=rtTxt(pr,'Single Pass');const p=pr.price?.formatted;if(t)out.push(`<span class="tag ll">${t}${p&&pr.state==='AVAILABLE'?' · '+p:''}</span>`)}
+  if(sr&&sr.waitTime!=null)out.push(`<span class="tag">Single rider ${sr.waitTime}m</span>`);else if(sr&&e.status==='OPERATING')out.push(`<span class="tag">Single rider</span>`);
+  if(bg)out.push(`<span class="tag ll">Boarding group${bg.currentGroupStart?` ${bg.currentGroupStart}–${bg.currentGroupEnd}`:''}</span>`);
+  return out.join('');
+}
+const isMeet=n=>/^(Meet|Greet)|Character|Meet /i.test(n);
+function shows(id,{meets=st.meets}={}){
+  return byPark(id).filter(e=>e.entityType==='SHOW'&&(e.showtimes||[]).length&&(meets||!isMeet(e.name)));
+}
+function nightShows(id){
+  const out=[];
+  for(const e of shows(id,{meets:false}))for(const s of e.showtimes){
+    const h=+new Date(s.startTime).toLocaleString('en-US',{timeZone:TZ,hour:'numeric',hour12:false});
+    if(s.type==='Performance Time'&&h>=19&&ymd(new Date(s.startTime))===ymd(new Date()))out.push({name:cleanName(e.name),t:s.startTime});
+  }
+  const m=new Map();out.sort((a,b)=>new Date(a.t)-new Date(b.t)).forEach(x=>{if(!m.has(x.name))m.set(x.name,[]);m.get(x.name).push(x.t)});
+  return [...m].map(([name,ts])=>({name,ts}));
+}
+
+/* ---------- rendering ---------- */
+function chips(){
+  const items=[{k:'all',short:'All parks'},...PARKS.slice(0,4),{k:'water',short:'Water parks'}];
+  $('#chips').innerHTML=items.map(p=>`<button class="chip" data-v="${p.k}" aria-pressed="${st.view===p.k}">${p.short}</button>`).join('');
+}
+function stamp(){
+  if(!st.liveAt){$('#stamp').textContent=st.err?'Offline':'Loading…';return}
+  const m=Math.round((Date.now()-st.liveAt)/60e3);
+  $('#stamp').textContent=m<1?'Updated just now':`Updated ${m} min ago`;
+}
+function hero(p,{link=false}={}){
+  const h=hoursLine(p.id);const ns=nightShows(p.id);
+  return `<div class="hero${link?' click':''}" style="--pc:${p.c}" ${link?`data-go="${p.k}"`:''}>
+    <h2>${p.name}</h2>
+    <div class="hrs">${h.main}</div>
+    <div class="sub">${openStatus(p.id)}${h.extras.map(x=>` · ${esc(x.label)} ${x.txt}`).join('')}</div>
+    ${ns.length?`<div class="tonight"><span>Tonight</span>${ns.slice(0,3).map(s=>`<span><b>${s.ts.map(fmtT).join(', ')}</b> ${esc(s.name)}</span>`).join('')}</div>`:''}
+  </div>`;
+}
+function rideRow(e,p){
+  const w=wait(e);const op=e.status==='OPERATING';const fav=st.favs.has(e.id);
+  const statusTag=e.status==='DOWN'?'<span class="tag down">Temporarily down</span>':e.status==='REFURBISHMENT'?'<span class="tag down">Refurbishment</span>':e.status==='CLOSED'?'<span class="tag">Closed</span>':'';
+  const box=op&&w!=null?`<div class="wait ${wclass(w)}"><span class="num">${w}</span><small>min</small></div>`:`<div class="wait w-x"><span class="num">${op?'Open':e.status==='DOWN'?'Down':'—'}</span></div>`;
+  return `<div class="row"><button class="star" data-fav="${e.id}" aria-pressed="${fav}" aria-label="Favorite ${esc(e.name)}">★</button>
+   <div class="nm">${esc(cleanName(e.name))}<div class="meta">${statusTag}${op?llTags(e)+trend(e):''}</div></div>${box}</div>`;
+}
+function overview(list){
+  return `<div class="grid">${list.map(p=>{
+    const rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
+    const open=rides.filter(e=>e.status==='OPERATING');const ws=open.map(wait).filter(w=>w!=null);
+    const avg=ws.length?Math.round(ws.reduce((a,b)=>a+b,0)/ws.length):null;
+    const favs=rides.filter(e=>st.favs.has(e.id));
+    const top=(favs.length?favs:open.filter(e=>wait(e)!=null)).sort((a,b)=>(wait(b)??-1)-(wait(a)??-1)).slice(0,favs.length?8:4);
+    return `<section class="card">${hero(p,{link:true})}
+      <div class="stats"><div><span class="num">${open.length}</span><small>rides open</small></div>
+      <div><span class="num">${avg??'—'}</span><small>avg wait</small></div>
+      <div><span class="num">${ws.length?Math.max(...ws):'—'}</span><small>longest</small></div></div>
+      ${top.length?`<div class="toplist">${top.map(e=>rideRow(e,p)).join('')}</div>`:`<div class="empty">No wait times posted right now.</div>`}
+      ${top.length?`<div class="row"><span class="nm" style="font-weight:500;color:var(--mute);font-size:14px">${favs.length?'Your favorites':'Longest waits right now'}</span><button class="tog" data-go="${p.k}">All ${p.short} →</button></div>`:''}
+    </section>`}).join('')}</div>`;
+}
+function ridesView(p){
+  let rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
+  if(st.openOnly)rides=rides.filter(e=>e.status==='OPERATING'||e.status==='DOWN');
+  if(st.q)rides=rides.filter(e=>e.name.toLowerCase().includes(st.q));
+  const cmp=st.sort==='wait'?(a,b)=>(wait(b)??-1)-(wait(a)??-1)||a.name.localeCompare(b.name):(a,b)=>cleanName(a.name).localeCompare(cleanName(b.name));
+  const favs=rides.filter(e=>st.favs.has(e.id)).sort(cmp),rest=rides.filter(e=>!st.favs.has(e.id)).sort(cmp);
+  return `<div class="tools"><input type="search" id="q" placeholder="Search rides" value="${esc(st.q)}" autocomplete="off">
+    <button class="tog" id="sort">Sort: ${st.sort==='wait'?'Longest wait':'A–Z'}</button>
+    <label class="tog"><input type="checkbox" id="openOnly" ${st.openOnly?'checked':''}> Open only</label></div>
+    ${favs.length?`<div class="sect">Favorites</div><div class="card">${favs.map(e=>rideRow(e,p)).join('')}</div><div class="sect">Everything else</div>`:''}
+    <div class="card">${rest.length?rest.map(e=>rideRow(e,p)).join(''):'<div class="empty">Nothing matches.</div>'}</div>`;
+}
+function showsView(p){
+  const now=Date.now();
+  let list=shows(p.id).filter(e=>!st.q||e.name.toLowerCase().includes(st.q)).map(e=>{
+    const ts=[...e.showtimes].sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));
+    const nxt=ts.find(s=>+new Date(s.endTime||s.startTime)>=now);
+    return {e,ts,nxt};
+  });
+  list.sort((a,b)=>(a.nxt?0:1)-(b.nxt?0:1)||(a.nxt&&b.nxt?new Date(a.nxt.startTime)-new Date(b.nxt.startTime):0)||a.e.name.localeCompare(b.e.name));
+  const row=({e,ts,nxt})=>{
+    const range=ts.every(s=>s.type!=='Performance Time');
+    const chips=ts.map(s=>{const past=+new Date(s.endTime||s.startTime)<now;const isN=s===nxt;
+      const lbl=range?`${fmtT(s.startTime)}–${fmtT(s.endTime)}`:fmtT(s.startTime);
+      return `<span class="t${past?' past':''}${isN?' next':''}">${lbl}</span>`}).join('');
+    return `<div class="row"><div class="nm">${esc(cleanName(e.name))}<div class="times">${chips}</div></div></div>`;
+  };
+  const ns=nightShows(p.id);
+  return `<div class="tools"><input type="search" id="q" placeholder="Search shows" value="${esc(st.q)}" autocomplete="off">
+    <label class="tog"><input type="checkbox" id="meets" ${st.meets?'checked':''}> Character meets</label></div>
+    ${ns.length?`<div class="sect">Evening shows tonight</div><div class="card">${ns.map(s=>`<div class="row"><div class="nm">${esc(s.name)}</div><div class="times">${s.ts.map(t=>`<span class="t${+new Date(t)<now?' past':' next'}">${fmtT(t)}</span>`).join('')}</div></div>`).join('')}</div>`:''}
+    <div class="sect">All of today’s show times</div>
+    <div class="card">${list.length?list.map(row).join(''):'<div class="empty">No show times posted for today.</div>'}</div>`;
+}
+function hoursView(list){
+  const days=[...new Set(list.flatMap(p=>(st.sched[p.id]||[]).map(s=>s.date)))].sort().filter(d=>d>=ymd(new Date())).slice(0,10);
+  return list.map(p=>`<div class="sect">${list.length>1?p.name:'Next 10 days'}</div><div class="card" style="--pc:${p.c}"><table class="hrsT"><tbody>${days.map(d=>{
+    const h=hoursLine(p.id,d);const pass=h.purchases.find(x=>x.type==='PACKAGE');
+    return `<tr class="${d===ymd(new Date())?'today':''}"><td>${d===ymd(new Date())?'Today':dayName(d)}</td><td>${h.main||'—'}${h.extras.map(x=>`<span class="x">${esc(x.label)} ${x.txt}</span>`).join('')}${pass?.price?`<span class="x">LL Multi Pass ${pass.price.formatted}${pass.available===false?' (sold out)':''}</span>`:''}</td></tr>`}).join('')}</tbody></table></div>`).join('');
+}
+function render(){
+  chips();stamp();
+  const m=$('#main');const banner=st.err?`<div class="banner">${esc(st.err)}</div>`:'';
+  if(!st.live){m.innerHTML=banner+'<div class="empty">Loading live park data…</div>';return}
+  const qFocus=document.activeElement?.id==='q';
+  if(st.view==='all'){m.innerHTML=banner+overview(PARKS.slice(0,4))}
+  else if(st.view==='water'){m.innerHTML=banner+overview(PARKS.slice(4))+hoursView(PARKS.slice(4))}
+  else{
+    const p=PARKS.find(x=>x.k===st.view);
+    m.innerHTML=banner+`<div class="card" style="--pc:${p.c}">${hero(p)}</div>
+      <div class="seg" style="--pc:${p.c}">${['rides','shows','hours'].map(t=>`<button data-tab="${t}" aria-pressed="${st.tab===t}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div>
+      <div style="--pc:${p.c}">${st.tab==='rides'?ridesView(p):st.tab==='shows'?showsView(p):hoursView([p])}</div>`;
+  }
+  m.insertAdjacentHTML('beforeend',`<p class="foot">Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a> · waits refresh every 5 minutes · times are Orlando time.<br>Unofficial — not affiliated with Disney.</p>`);
+  if(qFocus){const q=$('#q');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-v],[data-go],[data-tab],[data-fav],#sort,#refresh');if(!t)return;
+  if(t.dataset.v||t.dataset.go){st.view=t.dataset.v||t.dataset.go;st.q='';store.set('view',st.view);render();window.scrollTo(0,0)}
+  else if(t.dataset.tab){st.tab=t.dataset.tab;st.q='';store.set('tab',st.tab);render()}
+  else if(t.dataset.fav){const id=t.dataset.fav;st.favs.has(id)?st.favs.delete(id):st.favs.add(id);store.set('favs',[...st.favs]);render()}
+  else if(t.id==='sort'){st.sort=st.sort==='wait'?'name':'wait';store.set('sort',st.sort);render()}
+  else if(t.id==='refresh'){load(true)}
+});
+document.addEventListener('input',ev=>{if(ev.target.id==='q'){st.q=ev.target.value.trim().toLowerCase();render()}});
+document.addEventListener('change',ev=>{
+  if(ev.target.id==='openOnly'){st.openOnly=ev.target.checked;store.set('openOnly',st.openOnly);render()}
+  if(ev.target.id==='meets'){st.meets=ev.target.checked;store.set('meets',st.meets);render()}
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(false)});
+setInterval(()=>{if(!document.hidden)load(false)},60e3);
+setInterval(stamp,30e3);
+render();load(true);
+}
+</script>
+</body>
+</html>
