@@ -16,10 +16,10 @@
    IDEA: the in-park tip board — big wait numbers on a lit board, one per park.
    PICTURE: the board itself — each park gets a coloured header band with hours and tonight's spectacular.
    COLOUR and TYPE: midnight-indigo chrome, per-park accents, wait pills on a teal→gold→coral heat scale; Outfit numerals + Inter.
-   LAYOUT: sticky header + park chips, then the board; single column on phones, two columns on wide screens. */
+   LAYOUT: sticky header + chips, then the board; single column on phones, two or three columns on wide screens. */
 :root{color-scheme:light dark;
 --bg:light-dark(#f4f3fb,#0d0f24);--card:light-dark(#ffffff,#171a38);--ink:light-dark(#171a3a,#eef0ff);
---mute:light-dark(#5e6288,#a3a8d4);--line:light-dark(#e3e2f2,#272b55);--chrome:#1b1f4a;
+--mute:light-dark(#5e6288,#a3a8d4);--line:light-dark(#e3e2f2,#272b55);--chrome:#1b1f4a;--soft:light-dark(#eeedf8,#232750);
 --short:light-dark(#0f8f86,#2fc7b9);--mid:light-dark(#b07a00,#f2b631);--long:light-dark(#d2453a,#ff7a6b);
 --accent:#5b4bdb}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
@@ -28,11 +28,12 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;padding-bottom:env(safe-area-inset-bottom)}
 h1,h2,h3,.num{font-family:Outfit,system-ui,sans-serif}
 button{font:inherit;color:inherit}
+a{color:inherit}
 .top{position:sticky;top:0;z-index:5;background:var(--chrome);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) max(4vw,14px) 0}
 .bar{display:flex;align-items:center;gap:10px;max-width:1240px;margin:auto}
 .bar h1{font-size:19px;line-height:1.15;margin:0;font-weight:700;letter-spacing:.2px;flex:1}.bar h1 span{white-space:nowrap}
 .stamp{font-size:13px;color:#c9ccf5;white-space:nowrap}
-.refresh{background:#ffffff1f;border:0;border-radius:999px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer}
+.refresh{background:#ffffff1f;border:0;border-radius:999px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer;flex:none}
 .refresh svg{width:20px;height:20px}
 .refresh.spin svg{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -41,46 +42,49 @@ button{font:inherit;color:inherit}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;border:0;border-radius:999px;padding:10px 16px;min-height:44px;background:#ffffff14;color:#e6e8ff;font-weight:600;cursor:pointer}
 .chip[aria-pressed=true]{background:#fff;color:var(--chrome)}
-.chip:focus-visible,.seg button:focus-visible,.refresh:focus-visible,.star:focus-visible{outline:3px solid #ffd76a;outline-offset:2px}
+.chip:focus-visible,.seg button:focus-visible,.refresh:focus-visible,.star:focus-visible,.tog:focus-visible,summary:focus-visible{outline:3px solid #ffd76a;outline-offset:2px}
 main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
 .banner{background:light-dark(#fff3d6,#3a2e0c);color:light-dark(#6b4a00,#ffd98a);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px;align-items:start}
 .card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 6px 20px -12px #1b1f4a55}
 .hero{background:var(--pc);color:#fff;padding:18px 18px 16px;position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;right:-40px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#ffffff38,#fff0 70%)}
+.hero::after{content:"";position:absolute;right:-40px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#ffffff38,#fff0 70%);pointer-events:none}
 .hero h2{margin:0;font-size:clamp(24px,6vw,34px);line-height:1.05;font-weight:700;text-wrap:balance}
 .hero .hrs{font-size:17px;margin-top:6px;font-weight:600}
 .hero .sub{font-size:14px;opacity:.88;margin-top:2px}
-.tonight{margin-top:12px;background:#00000029;border-radius:12px;padding:10px 12px;font-size:15px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-.tonight b{font-family:Outfit;font-size:18px;white-space:nowrap}
+.hero .wx{position:absolute;top:16px;right:16px;z-index:1;font-size:13px;font-weight:600;background:#00000029;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.evchip{display:inline-block;margin-top:8px;font-size:13px;font-weight:600;background:#ffffff2e;border-radius:999px;padding:3px 10px}
 .marq{margin-top:12px;background:#00000029;border-radius:12px;padding:10px 12px}
 .marq .lbl{font-size:12.5px;opacity:.85;font-weight:600;margin-bottom:2px}
 .marq .m{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:3px 0;font-size:15px}
 .marq .m b{font-family:Outfit;font-size:19px;white-space:nowrap}
 .marq .m i{font-style:normal;opacity:.8;font-size:14px;white-space:nowrap}
-.marq .m .gone{opacity:.5;text-decoration:line-through}
+.gone{opacity:.5;text-decoration:line-through}
 .closed{padding:18px 16px;color:var(--mute);text-align:center;font-size:15px}
 .closed b{display:block;color:var(--ink);font-family:Outfit;font-size:19px;margin-bottom:2px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}
 .stats div{padding:12px 14px}.stats div+div{border-left:1px solid var(--line)}
 .stats .num{font-size:26px;font-weight:700;line-height:1.1}
 .stats small{display:block;color:var(--mute);font-size:13px}
-.toplist{padding:6px 0 8px}
 .seg{display:flex;background:var(--card);border-radius:14px;padding:4px;gap:4px;margin:14px 0;box-shadow:0 1px 0 var(--line)}
-.seg button{flex:1;border:0;background:none;border-radius:10px;min-height:44px;font-weight:600;color:var(--mute);cursor:pointer}
+.seg button{flex:1;border:0;background:none;border-radius:10px;min-height:44px;font-weight:600;color:var(--mute);cursor:pointer;font-size:15px;padding:0 4px}
+.lw{display:none}@media(min-width:560px){.lw{display:inline}.ln{display:none}}
 .seg button[aria-pressed=true]{background:var(--pc,var(--accent));color:#fff}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
 .tools input[type=search]{flex:1 1 200px;font-size:16px;padding:10px 14px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
-.tog{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mute);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:44px;cursor:pointer;white-space:nowrap}
+.tog{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mute);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:44px;cursor:pointer;white-space:nowrap;text-decoration:none}
 .tog input{width:18px;height:18px;accent-color:var(--pc,var(--accent))}
 .row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line)}
 .row:first-child{border-top:0}
 .row .nm{flex:1;font-weight:600;line-height:1.3}
 .row .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;font-weight:500}
-.tag{font-size:12.5px;padding:2px 8px;border-radius:999px;background:light-dark(#eeedf8,#232750);color:var(--mute);white-space:nowrap}
+.row .side{flex:none;text-align:right;font-size:14px;color:var(--mute);white-space:nowrap}
+.row .side b{display:block;color:var(--ink);font-family:Outfit;font-size:18px}
+.tag{font-size:12.5px;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
 .tag.ll{background:light-dark(#e8e4ff,#2c2766);color:light-dark(#4a3bc4,#c4bbff)}
 .tag.down{background:light-dark(#ffe3df,#4a1d1a);color:var(--long)}
-.tag.up{color:var(--short)}
+.tag.good{background:light-dark(#dcf5f2,#123b38);color:var(--short)}
+.tag.park{color:#fff;background:var(--pc)}
 .wait{flex:none;width:62px;text-align:center;border-radius:12px;padding:6px 0 4px;color:#fff;font-family:Outfit;line-height:1}
 .wait .num{font-size:26px;font-weight:800;display:block}
 .wait small{font-size:11px;opacity:.9}
@@ -90,10 +94,12 @@ main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
 .star{flex:none;border:0;background:none;width:36px;height:44px;margin:-6px -4px -6px -8px;cursor:pointer;color:light-dark(#c7c6dc,#3d4170);font-size:22px;line-height:1}
 .star[aria-pressed=true]{color:#f2b631}
 .times{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
-.t{font-family:Outfit;font-weight:600;font-size:14px;padding:3px 9px;border-radius:8px;background:light-dark(#eeedf8,#232750);white-space:nowrap}
+.t{font-family:Outfit;font-weight:600;font-size:14px;padding:3px 9px;border-radius:8px;background:var(--soft);white-space:nowrap}
 .t.past{opacity:.38;text-decoration:line-through}
 .t.next{background:var(--pc,var(--accent));color:#fff}
 .sect{font-family:Outfit;font-size:15px;font-weight:700;color:var(--mute);margin:18px 2px 8px}
+.sect:first-child{margin-top:0}
+.note{font-size:13.5px;color:var(--mute);padding:10px 14px;border-top:1px solid var(--line)}
 .hrsT{width:100%;border-collapse:collapse;font-size:15px}
 .hrsT td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top}
 .hrsT tr:first-child td{border-top:0}
@@ -102,18 +108,75 @@ main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
 .today td:first-child{color:var(--pc,var(--accent))}
 .empty{padding:22px 16px;color:var(--mute);text-align:center}
 .foot{color:var(--mute);font-size:13px;text-align:center;margin-top:26px}
-.foot a{color:inherit}
 .click{cursor:pointer}
+/* weather */
+.wxcard{padding:14px 16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:center}
+.wxnow{display:flex;align-items:center;gap:10px}
+.wxnow svg{width:44px;height:44px;color:var(--mid)}
+.wxnow .num{font-size:40px;font-weight:700;line-height:1}
+.wxtxt{font-size:14px;color:var(--mute)}.wxtxt b{color:var(--ink);font-weight:600;display:block;font-size:15px}
+.hours{grid-column:1/-1;display:flex;gap:4px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+.hours::-webkit-scrollbar{display:none}
+.hr{flex:1 0 46px;text-align:center;font-size:12.5px;color:var(--mute);border-radius:10px;padding:6px 2px}
+.hr svg{width:22px;height:22px;display:block;margin:2px auto;color:var(--ink)}
+.hr b{display:block;color:var(--ink);font-family:Outfit;font-size:15px}
+.hr .p{color:var(--short);font-weight:600}.hr .p.hi{color:var(--long)}
+.wxalert{grid-column:1/-1;font-size:14px;font-weight:600;color:var(--long);margin-top:4px}
+/* events */
+.evrow{padding:12px 14px;border-top:1px solid var(--line)}
+.evrow:first-child{border-top:0}
+.evrow h3{margin:0;font-size:17px;line-height:1.25}
+.evrow .when{font-size:14px;color:var(--mute);margin-top:2px}
+.evrow p{margin:6px 0 0;font-size:14.5px}
+.evrow .times{margin-top:8px}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px;background:var(--soft);color:var(--mute);white-space:nowrap}
+.pill.tix{background:light-dark(#fff0d6,#3a2e0c);color:light-dark(#8a5a00,#ffd98a)}
+.pill.now{background:light-dark(#dcf5f2,#123b38);color:var(--short)}
+.evstrip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
+.evstrip::-webkit-scrollbar{display:none}
+.evstrip button{flex:none;border:0;cursor:pointer;background:var(--card);box-shadow:0 1px 0 var(--line);border-radius:14px;padding:10px 14px;text-align:left;font-size:14px;max-width:290px}
+.evstrip button b{display:block;font-family:Outfit;font-size:15.5px;line-height:1.2}
+.evstrip button span{color:var(--mute)}
+/* resorts */
+details.res{border-top:1px solid var(--line)}
+details.res:first-child{border-top:0}
+details.res summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;gap:10px;min-height:56px}
+details.res summary::-webkit-details-marker{display:none}
+details.res summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(45deg);margin:-4px 4px 0 auto;flex:none;transition:transform .15s}
+details.res[open] summary::after{transform:rotate(225deg);margin-top:4px}
+details.res summary .nm{font-weight:600;line-height:1.25}
+details.res summary small{display:block;color:var(--mute);font-weight:500;font-size:13.5px}
+.dine{padding:0 14px 12px}
+.dine h4{margin:8px 0 2px;font-size:13px;color:var(--mute);font-weight:600}
+.dine ul{list-style:none;margin:0;padding:0}
+.dine li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line);font-size:15px}
+.dine li:first-child{border-top:0}
+.dine li a{font-size:13.5px;color:var(--accent);white-space:nowrap;text-decoration:none;font-weight:600;padding:6px 0}
+:root{--accent-ink:light-dark(#4a3bc4,#b9b0ff)}.dine li a{color:var(--accent-ink)}
+.tl{display:grid;grid-template-columns:4.1em minmax(0,1fr);gap:2px 12px;padding:10px 14px;border-top:1px solid var(--line);align-items:baseline}
+.tl:first-child{border-top:0}
+.tl b{font-family:Outfit;font-size:17px;white-space:nowrap}
+.tl span{font-weight:600;line-height:1.3}
+.tl .tag{grid-column:2;justify-self:start;margin-top:2px}
+.tl.past{opacity:.45}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity=".25"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></symbol>
+  <symbol id="i-part" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3.5v1.4M3.5 8h1.4M4.8 4.8l1 1M11.2 4.8l-1 1"/><circle cx="8" cy="8" r="2.6"/><path d="M8.5 19.5h9a3.5 3.5 0 0 0 .3-7 5 5 0 0 0-9.6 1.4A2.8 2.8 0 0 0 8.5 19.5z" fill="currentColor" fill-opacity=".18"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 18.5h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 18.5z" fill="currentColor" fill-opacity=".18"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 14.5h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 14.5z" fill="currentColor" fill-opacity=".18"/><path d="M8 17.5l-1 3M12.5 17.5l-1 3M17 17.5l-1 3"/></symbol>
+  <symbol id="i-storm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14.5h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 14.5z" fill="currentColor" fill-opacity=".18"/><path d="M12.5 15l-2 3.5h3l-2 3.5"/></symbol>
+  <symbol id="i-fog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h16M6 13h12M4 17h16"/></symbol>
+</svg>
 <header class="top">
   <div class="bar">
     <h1>Bret and Nicole <span>WDW Park Board</span></h1>
     <span class="stamp" id="stamp">Loading…</span>
     <button class="refresh" id="refresh" aria-label="Refresh now"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg></button>
   </div>
-  <nav class="chips" id="chips" aria-label="Parks"></nav>
+  <nav class="chips" id="chips" aria-label="Sections"></nav>
 </header>
 <main id="main"><div class="empty">Loading live park data…</div></main>
 <script>
@@ -121,83 +184,125 @@ main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
 const API='https://api.themeparks.wiki/v1';
 const DEST='e957da41-3552-4cf6-b636-5babc5cbc4e5';
 const TZ='America/New_York';
+const WX_URL='https://api.open-meteo.com/v1/forecast?latitude=28.385&longitude=-81.564&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=sunset,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=2';
 const PARKS=[
- {k:'mk',id:'75ea578a-adc8-4116-a54d-dccb60765ef9',short:'Magic Kingdom',name:'Magic Kingdom',c:'#3f51d8',marquee:[{re:/^Happily Ever After/i,label:'Happily Ever After'},{re:/Dream the Night Away/i,label:'Dream the Night Away'}],events:[[8,10,"Mickey's Not-So-Scary Halloween Party"],[11,12,"Mickey's Very Merry Christmas Party"]]},
+ {k:'mk',id:'75ea578a-adc8-4116-a54d-dccb60765ef9',short:'Magic Kingdom',name:'Magic Kingdom',c:'#3f51d8',marquee:[{re:/^Happily Ever After/i,label:'Happily Ever After'},{re:/Dream the Night Away/i,label:'Dream the Night Away'}]},
  {k:'ep',id:'47f90d2c-e191-4239-a466-5892ef59a88b',short:'EPCOT',name:'EPCOT',c:'#8a3fc7',marquee:[{re:/^Luminous/i,label:'Luminous The Symphony of Us'}]},
- {k:'hs',id:'288747d1-8b4f-4a64-867e-ea7c9b27bad8',short:'Hollywood Studios',name:'Hollywood Studios',c:'#c2364f',marquee:[{re:/^Fantasmic/i,label:'Fantasmic!'}],events:[[11,12,'Disney Jollywood Nights']]},
+ {k:'hs',id:'288747d1-8b4f-4a64-867e-ea7c9b27bad8',short:'Hollywood Studios',name:'Hollywood Studios',c:'#c2364f',marquee:[{re:/^Fantasmic/i,label:'Fantasmic!'}]},
  {k:'ak',id:'1c84a229-8862-4648-9c71-378ddd2c7693',short:'Animal Kingdom',name:'Animal Kingdom',c:'#1f7a5a',marquee:[{re:/^Tree of Life Awakenings/i,label:'Tree of Life Awakenings'}]},
- {k:'tl',id:'b070cbc5-feaa-4b87-a8c1-f94cca037a18',short:'Typhoon Lagoon',name:'Typhoon Lagoon',c:'#0f86b5'},
- {k:'bb',id:'ead53ea5-22e5-4095-9a83-8c29300d7c63',short:'Blizzard Beach',name:'Blizzard Beach',c:'#2b7fd0'}
+ {k:'tl',id:'b070cbc5-feaa-4b87-a8c1-f94cca037a18',short:'Typhoon Lagoon',name:'Typhoon Lagoon',c:'#0f86b5',marquee:[]},
+ {k:'bb',id:'ead53ea5-22e5-4095-9a83-8c29300d7c63',short:'Blizzard Beach',name:'Blizzard Beach',c:'#2b7fd0',marquee:[]}
 ];
-const LIVE_MS=5*60e3, SCHED_MS=30*60e3;
+const THEME=PARKS.slice(0,4);
+
+/* ---- Special events: update these as Disney announces dates (last checked Nov 25, 2026) ---- */
+const EVENTS=[
+ {name:'EPCOT International Food & Wine Festival',park:'ep',start:'2026-08-27',end:'2026-11-21',blurb:'Global Marketplace food booths around the park and the Eat to the Beat concert series.'},
+ {name:'Holidays at Walt Disney World',park:'all',start:'2026-11-13',end:'2027-01-06',blurb:'Holiday decor across the parks and resorts, including gingerbread displays at select resorts.'},
+ {name:'EPCOT International Festival of the Holidays',park:'ep',start:'2026-11-27',end:'2026-12-30',blurb:'Holiday Kitchens, the Holiday Cookie Stroll, World Showcase storytellers and the nightly Candlelight Processional.'},
+ {name:"Mickey's Very Merry Christmas Party",park:'mk',start:'2026-11-08',end:'2026-12-22',ticket:true,blurb:'After-hours holiday party with the Once Upon a Christmastime Parade and Minnie’s Wonderful Christmastime Fireworks. Passholders get $10 off on select nights. Magic Kingdom closes early to regular guests on party nights.'},
+ {name:'Disney Jollywood Nights',park:'hs',start:'2026-11-07',end:'2027-01-05',ticket:true,blurb:'Holiday after-hours party at Hollywood Studios on select nights.'},
+ {name:'EPCOT International Festival of the Arts',park:'ep',start:'2027-01-15',end:'2027-03-01',blurb:'Food Studios, visiting artists and the Disney on Broadway Concert Series at America Gardens Theatre.'},
+ {name:'Disney After Hours at EPCOT',park:'ep',start:'2027-01-21',end:'2027-07-29',ticket:true,nights:['2027-01-21','2027-02-18','2027-04-01','2027-04-15','2027-04-22','2027-05-06','2027-05-13','2027-06-03','2027-06-12','2027-07-08','2027-07-22','2027-07-29'],blurb:'Three extra hours after closing with short lines. Separate ticket.'},
+ {name:'EPCOT International Flower & Garden Festival',park:'ep',start:'2027-03-10',end:'2027-05-31',blurb:'Character topiaries, themed gardens, Outdoor Kitchens and the Garden Rocks Concert Series.'},
+ {name:"Mickey's Not-So-Scary Halloween Party",park:'mk',tba:'2027 dates not announced yet · usually select nights, August to October',ticket:true,blurb:'Halloween after-hours party with the Boo-to-You Parade and fireworks.'},
+ {name:'EPCOT International Food & Wine Festival 2027',park:'ep',tba:'2027 dates not announced yet · usually late August to November',blurb:'Disney usually announces dates in the spring.'}
+];
+
+/* ---- Resorts, grouped by transportation; dining grouped from the live feed's restaurant locations ---- */
+const RESORTS=[{"g":"mk","gname":"Magic Kingdom area","name":"Contemporary Resort","tr":"Monorail · walk to Magic Kingdom","items":[["49dfad5e-0f82-42dd-9ded-5a5d3cac11a6","California Grill"],["853687d0-5de6-43ec-b0c3-ac43f1217e77","Chef Mickey's"],["46345e53-ea02-46e8-a39a-d7376959cf4c","Contempo Café"],["04dec3b6-a1f6-458c-bf65-587b53fbacf8","Cove Bar"],["4c58f313-25f8-49ca-9820-483de2005c39","Outer Rim"],["2eb9f5eb-2bff-42d7-8d90-a84bb6a4f16b","Steakhouse 71"],["f1c9dfd6-97b1-48b4-b6c3-2dd12401b071","Steakhouse 71 Lounge"],["632f8143-8e89-44f1-9c38-9b922d638385","The Sand Bar"]]},{"g":"mk","gname":"Magic Kingdom area","name":"Polynesian Village Resort","tr":"Monorail · boat to Magic Kingdom","items":[["1d659f1e-9aa9-45ff-8aa9-a75bd55a7c49","'Ohana"],["217d0aab-38b2-4581-8b75-0275e54a53e8","Barefoot Pool Bar"],["8e4b1d61-8a89-4407-8d27-c2c247746a23","Capt. Cook's"],["656eac75-9849-43fe-a24d-165e63ffb342","Kona Cafe"],["5469e84c-b144-4a9e-82d3-8e3d8c61e6d0","Kona Café To Go"],["5e5e824f-9b67-4e8f-bedf-9b618121ef23","Oasis Bar & Grill"],["0f7d52ca-25fe-4eea-ad92-129268351342","Tambu Lounge"],["4c41aa4f-556f-40bb-93ff-f0eef4ff2038","Trader Sam's Grog Grotto"],["0db79a3d-bbdd-4c8e-94b0-a49071fabe8a","Trader Sam's Tiki Terrace"],["e64c1b8e-8a9e-4479-b0c9-9c80043edf19","Wailulu Bar & Grill"]]},{"g":"mk","gname":"Magic Kingdom area","name":"Grand Floridian Resort","tr":"Monorail · boat to Magic Kingdom","items":[["dd39f200-6465-42e6-bff1-6a8b25512e6e","1900 Park Fare"],["6ec34380-bad9-41af-a3e9-a4da466b6552","Beaches Pool Bar & Grill"],["712e539e-8d5e-416e-98f7-c0602bdd6433","Courtyard Pool Bar"],["e348336b-a035-44dc-bf7f-c9ebf0389a9d","Cítricos"],["d2581db2-025f-4192-b18a-b3dfaee963cd","Cítricos Lounge"],["6bad073d-3dd9-4500-bb85-29fa06c94ff8","Enchanted Rose"],["e65586d1-5fe7-4ca9-82b6-c9c532b962fc","Gasparilla Island Grill"],["99ab827f-6beb-46ef-8538-8e97bb8f667b","Grand Floridian Cafe"],["b61e138d-d0bd-4b3a-bb2c-7f899d116b9b","Narcoossee's"],["a2ab141b-687d-48aa-8638-c6e7951990f9","The Dining Room at Victoria & Albert’s"],["015bc3b1-33e1-4eb6-9892-8fcea6b7bc39","The Perch at Disney's Grand Floridian Resort & Spa"]]},{"g":"mk","gname":"Magic Kingdom area","name":"Wilderness Lodge","tr":"Boat to Magic Kingdom","items":[["3370e827-41da-4ae4-893e-84989d142281","Geyser Point Bar & Grill To Go"],["18326b42-c7ce-4c91-8f0f-48a3ef32883e","Roaring Fork"],["219f8463-0cb6-4434-80f8-87f289ea0eb9","Story Book Dining at Artist Point with Snow White"],["101a254c-a268-4984-a149-eb1bde8346f0","Territory Lounge"],["babeeb66-7289-4665-ba04-395f40358c8f","Whispering Canyon Cafe"]]},{"g":"mk","gname":"Magic Kingdom area","name":"Fort Wilderness","tr":"Boat to Magic Kingdom","items":[["12bcd0e4-be02-4e6f-ba9b-a3686fd826fc","Crockett's Tavern"],["7f6e15e9-f2cf-4965-90a5-5aa1f79a24ab","Hoop-Dee-Doo Musical Revue"],["01aa2148-93bd-410d-bf3d-5af2897b36c7","Meadow Snack Bar"],["c378fc14-0b9d-4357-966e-052f7c37a850","Trail's End Restaurant"]]},{"g":"ep","gname":"EPCOT area","name":"BoardWalk Inn","tr":"Walk or boat to EPCOT & Hollywood Studios","items":[["f9874b73-3dd0-444a-a172-678399aa1bbb","AbracadaBar"],["a12ad3ee-7bc6-4d65-a30a-f5c81543e754","Belle Vue Lounge"],["99fc0f7d-6962-4fb0-b194-748cc2a1bf4b","Blue Ribbon Corn Dogs"],["622b1134-59ef-4055-956e-883cff0c99cc","BoardWalk Deli"],["0f6fe5ca-1c0f-4334-aed1-3ebf1c7afaaa","BoardWalk Joe's Marvelous Margaritas"],["98861b0f-c8fd-430d-b6a5-58968cc14dd3","Flying Fish"],["0ed535cd-35da-4ec0-834b-ea9d1a025b15","Leaping Horse Libations"],["70095548-6b95-472d-9d1a-b59db1181b59","Pizza Window"],["32dac17d-c445-4820-b4ab-bee0fadbd360","The Cake Bake Shop® Restaurant by Gwendolyn Rogers"],["8a3e8d45-f7f8-4b26-a237-2e3d2d6033bf","Trattoria al Forno"]]},{"g":"ep","gname":"EPCOT area","name":"Yacht & Beach Club","tr":"Walk or boat to EPCOT & Hollywood Studios","items":[["e943c0e3-4c73-40a5-8501-899ec0b3d047","Ale & Compass Lounge"],["422e7379-741e-4935-a2f7-6bee7662d81d","Ale & Compass Restaurant"],["22a519f8-1f81-4819-9068-80531c34e59a","Beach Club Marketplace"],["d51d654d-6fd0-4814-8427-2709c527e0fc","Beaches & Cream Soda Shop"],["ff9aa159-0b93-400b-a3ad-1b2a0640c132","Cape May Cafe"],["a5171a3d-829b-4ec8-ae0b-edf2c2f32309","Crew's Cup Lounge"],["00d453d3-2d5f-498b-996c-582e9364f224","Hurricane Hanna's Waterside Bar and Grill"],["a0c546b1-e915-4d6d-9c93-d013c77aa620","Martha's Vineyard"],["66579019-66f1-4a15-9b84-f5338184e8e7","The Market at Ale & Compass"],["12a0dc40-e3cd-409d-b82f-ede9e7136a81","Yachtsman Steakhouse"]]},{"g":"ep","gname":"EPCOT area","name":"Swan, Dolphin & Swan Reserve","tr":"Walk or boat to EPCOT & Hollywood Studios","items":[["d7618a38-f383-4ea6-b77c-9f27912f841b","Amare"],["036f88f3-6058-4c96-85f5-ac6938b85e73","Bourbon Steak - A Michael Mina Restaurant"],["fa026fee-fb06-4112-b00f-5f0eae7e78c3","Bourbon Steak Lounge"],["6caee4a3-b7fc-4d6d-b9f2-bee984503230","Chill"],["697cbc3f-bf13-4e68-b980-c9059a762c0d","Garden Grove"],["e89efc5c-f85c-488b-8b27-c96dd0017857","Hurly-Burly"],["fd30e928-a22b-4d93-930e-64bfb84aabda","Il Mulino"],["dcbfe131-0e85-4cec-aaa1-c16fc557bf9e","Il Mulino Lounge"],["94de4db5-70ab-4bd8-b50b-fa9914f1b8e4","Kimonos Lounge"],["8ec0e5c1-d4bf-4ec9-8128-8ae26db69122","Phins"],["eec1ffbe-6654-443c-b017-a6adf4cca63f","Rosa Mexicano"],["1559a263-eaac-48e3-9248-b669c0d41b9e","Rosa Mexicano Lounge"],["d90f0556-52f4-41d2-b21f-67d36fafbf75","Stir"],["f0437f34-d2fa-4a48-a6cc-d0402f3cd69e","Todd English's bluezoo"],["8998c35b-722b-4b0c-9379-95b09c92d774","Todd English's bluezoo Lounge"]]},{"g":"sky","gname":"Skyliner resorts","name":"Riviera Resort","tr":"Skyliner to EPCOT & Hollywood Studios","items":[["02950273-1937-49b0-bc99-161b81e8a8c9","Primo Piatto"],["3b20cc04-567d-4272-b582-c009ef050424","Topolino's Terrace – Flavors of the Riviera"]]},{"g":"sky","gname":"Skyliner resorts","name":"Caribbean Beach Resort","tr":"Skyliner hub to EPCOT & Hollywood Studios","items":[["a657b1d5-5148-4cc2-a412-ad8ebf6e9b03","Centertown Market"],["ac6c2ad6-c1c1-4f41-824c-8820dd3d0d26","Sebastian's Bistro"],["87dd7f98-bbcd-4e31-82a2-88f78fcc3e20","Spyglass Grill"]]},{"g":"sky","gname":"Skyliner resorts","name":"Pop Century Resort","tr":"Skyliner to EPCOT & Hollywood Studios","items":[["600f46aa-d8eb-43df-844e-74ee9d3503d3","Everything POP Shopping & Dining"],["efd07524-9f93-480b-9857-8fc199dbf1bd","Petals Pool Bar"]]},{"g":"sky","gname":"Skyliner resorts","name":"Art of Animation Resort","tr":"Skyliner to EPCOT & Hollywood Studios","items":[["7df156cf-5bb2-4740-9890-396eda083870","Landscape of Flavors"],["d24faecc-6cfe-4e76-ac1a-0206ece69ac0","The Drop Off Pool Bar"]]},{"g":"ds","gname":"Disney Springs area","name":"Disney Springs","tr":"Bus from every resort · boat from nearby resorts","items":[["22a28609-167e-4303-ae86-36055bcce908","Amorette's Patisserie"],["a2c20fd0-d7a4-4673-9f90-38ad076f408c","B.B. Wolf's Sausage Co."],["2814cb10-6acf-4cd9-bfae-1e5538fd1d20","Chef Art Smith's Homecomin'"],["927d02df-e29e-406a-b6e0-db8ae62e6f8b","City Works Eatery & Pour House"],["21a5ca02-34cf-4b06-96b4-36b55da0f58b","D-Luxe Burger"],["761ab303-115c-4a74-90f5-e1ba1bb820e7","Dockside Margaritas"],["2c3dc890-9640-4577-a0bf-edfc0d35a420","eet by Maneet Chauhan"],["20fd5ca8-4803-4a63-8c7b-f5bf7f0ac438","Enzo's Hideaway"],["147d2b17-6401-47ed-803d-56f0245b31ac","Frontera Cocina"],["12848c7f-1560-481c-8766-c744f127cad2","Goofy's Candy Company"],["4fd47b79-1d70-46b7-b245-93aa6ff05141","House of Blues® Restaurant & Bar"],["651211a5-4521-47e8-9f4c-38c470750ab1","Jaleo® by José Andrés"],["9bc68422-dca0-4dcd-b6a5-5df122a4a521","Jock Lindsey's Hangar Bar"],["5117dd93-1fb1-4215-aa2f-af520bb316f2","Lava Lounge at Rainforest Café®"],["d5ae53c1-d58c-4d8b-80ad-34115b1e9010","MacGUFFINS"],["a3a16def-102d-4264-b181-f4e6a19396bf","Maria & Enzo's Ristorante"],["5b1f886f-4f27-4dbe-aa05-3e3701046d57","Morimoto Asia™"],["682db3a8-1bd3-4ff1-8efb-d3522c52b1cc","Morimoto Asia™ Street Food"],["2c6deb77-9c18-4c8d-8b41-685be62302ad","Paddlefish"],["e34b847d-fe0e-4a53-8d3b-3b03b1454ff2","Paradiso 37, Taste of the Americas"],["7ad20d41-f0dd-4f37-aad1-9896a69f03f8","Planet Hollywood®"],["e711b7c8-5fd2-4a92-89ae-2b1ad9f9f312","Raglan Road™ Irish Pub and Restaurant"],["05f7fd04-0f74-4311-ab99-87fc46f8d3e2","Rainforest Cafe® at Disney Springs Marketplace"],["07858618-c4a5-491c-a46e-f23e1e8f702e","Splitsville Dining Room"],["54342abd-9ca5-4c22-8248-b375f19a05bf","Stargazers Bar"],["8c794f55-b178-4fd5-83fa-d968e6e99621","STK® Steakhouse"],["5ef3a16f-5567-4b28-ac3f-0fe14efec9ad","Summer House on the Lake"],["4f4a2520-0f1c-4ca0-b50d-5330f86dac0d","T-REX ™"],["517915ac-153d-4d46-a5ce-49caa99a24ea","Terralina Crafted Italian"],["4a2e8a2d-b1f4-43b6-bac6-9cac176f144a","The Basket at Wine Bar George"],["15bbd788-0124-4da9-b8ab-b8bfb113a07d","The BOATHOUSE®: Great Food, Waterfront Dining, Dream Boats™"],["7ea07ed3-df47-4354-84e6-d300e7e11ea8","The Daily Poutine"],["2c304546-14c9-43ce-afc9-882e584ea739","The Edison"],["82449365-24c5-4acd-abe9-cd020dc498e5","The Front Porch at House of Blues"],["77f5f20d-b201-4278-8467-229707d6ee3e","The Smokehouse at House of Blues®"],["017be6c6-f85a-4e1c-b2dd-e5634de9d2f6","Wine Bar George – A Restaurant & Bar"],["7ecb9219-1f28-4b76-af97-afd1f7ddb769","YeSake Kiosk"]]},{"g":"ds","gname":"Disney Springs area","name":"Saratoga Springs Resort","tr":"Boat or walk to Disney Springs","items":[["986befe9-0a11-44a8-8751-5a85d5695dea","Backstretch Pool Bar"],["c379ee2d-c4fd-4f7c-a017-2a7155af75e0","On the Rocks Pool Bar"],["7478a4e9-14b3-4d4f-9bff-2e468b55fe16","The Artist's Palette"],["3cbacc29-d05a-46a3-89fc-9df43ceb019b","The Paddock Grill"],["d56a99da-8d1c-47c9-bb42-220806da3d48","The Turf Club Bar and Grill"],["ac71f994-5833-4a4d-8a67-15714e08b2e6","The Turf Club Lounge"]]},{"g":"ds","gname":"Disney Springs area","name":"Old Key West Resort","tr":"Boat to Disney Springs","items":[["fbaa3eeb-6b68-4962-96c3-57b6eeb69559","Good's Food to Go"],["b8472783-3e75-477e-bc72-ce28bf3bd7b3","Gurgling Suitcase"],["ae1fe649-d98a-4d22-be7b-8555495c808c","Olivia's Cafe"],["aae7a379-1f07-4056-a818-8eefe275e722","Turtle Shack Poolside Snacks"]]},{"g":"ds","gname":"Disney Springs area","name":"Port Orleans Riverside","tr":"Boat to Disney Springs","items":[["2d7534b1-2d17-4462-99ee-7ef02f802ded","Boatwright's Dining Hall"],["f75539ef-a195-449d-bfb6-4c1b3667f7df","Muddy Rivers"],["6a8d3517-dc06-4d1c-bc38-5a84f397c8a9","River Roost"],["022e78f5-e107-412a-9c30-4554d8fdea4a","Riverside Mill Food Court"]]},{"g":"ds","gname":"Disney Springs area","name":"Port Orleans French Quarter","tr":"Boat to Disney Springs","items":[["356c4a8d-bf37-4a62-92fd-50eb9a9abf33","Mardi Grogs"],["e72f94ac-d373-49b5-b878-6d5afe1d94e6","Sassagoula Floatworks and Food Factory"],["fae25d37-21e4-4b5f-ae0c-44cf34d6e6d6","Scat Cat's Club - Lounge"]]},{"g":"bus","gname":"Bus resorts","name":"Animal Kingdom Lodge","tr":"Bus to all parks","items":[["eb63c263-1589-40f2-82fc-c7865eb1feb0","Boma - Flavors of Africa"],["3a5eb21b-7463-48c0-8167-4e784c2e011b","Cape Town Lounge and Wine Bar"],["fe6cee07-ba72-42c1-abfa-0ce4ef360eb4","Jiko - The Cooking Place"],["f3993d8a-77af-461e-83dd-b2f16c788837","Maji Pool Bar"],["29d9849e-db54-4d23-a561-bf2a35ef3a98","Sanaa"],["8b5b9a00-b2cc-4bd9-bf39-9c312c17e8cb","Sanaa Lounge"],["07e7c55b-e54e-4f84-b107-78aae3061d7b","The Mara"],["6602190a-6e64-4f14-8855-d9708136a967","Uzima Springs Pool Bar"],["514be058-91fc-4bf5-8c03-050f148ec765","Victoria Falls Lounge"]]},{"g":"bus","gname":"Bus resorts","name":"Coronado Springs Resort","tr":"Bus to all parks","items":[["cdac4278-10ed-4f92-88c5-be097653ec34","Barcelona Lounge"],["d9e4e3df-1e1b-4ac2-85f2-70c71f34a342","Dahlia Lounge"],["915d855f-1af8-45f0-878c-e0cc4ed832c7","Laguna Bar"],["f432be3e-6900-4146-8ed5-c02210e4666e","Maya Grill"],["aa846b60-a845-4e66-979c-ad7ff75b2dbb","Rix Sports Bar & Grill"],["7a5d58a4-c26a-401a-895e-0c8def120aef","Siestas Cantina"],["aea9b86e-5907-40ab-8352-c6fc2945c12c","Three Bridges Bar & Grill To Go"],["1a69ad26-a166-4c00-a1c1-6c1e03008d62","Three Bridges Bar and Grill at Villa del Lago"],["09199619-0400-4010-af4c-c7d6d6617e70","Toledo - Tapas, Steak & Seafood"]]},{"g":"bus","gname":"Bus resorts","name":"All-Star Resorts","tr":"Bus to all parks","items":[["bf710850-a3e1-4974-92ab-30553256e2e4","End Zone Food Court"],["c6746ddb-0e79-43c4-8ac9-683e1be90842","Grandstand Spirits"],["d8ba0af6-ebaf-4142-848e-a3ddebdc3271","Intermission Food Court"],["fdecfd5f-5b62-4f3b-a876-67483da54fbd","Silver Screen Spirits Pool Bar"],["af866eb1-3b17-4232-8758-1d5b1edaf977","Singing Spirits Pool Bar"],["b2f43002-bbac-46f4-8260-74398b049dc7","World Premiere Food Court"]]}];
+const RES_GROUPS=[['mk','Monorail & Magic Kingdom boats'],['ep','EPCOT area · walk or boat'],['sky','Skyliner'],['ds','Disney Springs area'],['bus','Bus resorts']];
+
+const LIVE_MS=5*60e3, SCHED_MS=30*60e3, WX_MS=30*60e3;
 const store={get(k,d){try{const v=localStorage.getItem('pb_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('pb_'+k,JSON.stringify(v))}catch(e){}}};
-const st={view:store.get('view','all'),tab:store.get('tab','rides'),q:'',openOnly:store.get('openOnly',true),sort:store.get('sort','wait'),meets:store.get('meets',false),
-  favs:new Set(store.get('favs',[])),live:null,sched:{},liveAt:0,schedAt:0,err:''};
+let view=store.get('view','now');if(view==='all')view='now';
+const st={view,tab:store.get('tab','rides'),q:'',rq:'',openOnly:store.get('openOnly',true),sort:store.get('sort','wait'),meets:store.get('meets',false),
+  favs:new Set(store.get('favs',[])),openRes:new Set(),live:null,liveById:{},sched:{},wx:null,liveAt:0,schedAt:0,wxAt:0,err:''};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmtT=iso=>iso?new Date(iso).toLocaleTimeString('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'}).replace(':00','').replace(' AM','a').replace(' PM','p'):'';
 const ymd=d=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
-const dayName=s=>{const d=new Date(s+'T12:00:00Z');return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'})};
-const cleanName=n=>String(n).replace(/[®™]/g,'').replace(/^Disney's /,'').trim();
+const today=()=>ymd(new Date());
+const dayName=s=>new Date(s+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'});
+const shortDate=s=>new Date(s+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
+const daysBetween=(a,b)=>Math.round((new Date(b+'T12:00:00Z')-new Date(a+'T12:00:00Z'))/864e5);
+const cleanName=n=>String(n).replace(/[®™]/g,'').replace(/^Disney's /,'').replace(/\s+/g,' ').trim();
 const wclass=w=>w==null?'w-x':w<=20?'w-s':w<=50?'w-m':'w-l';
+const parkOf=id=>PARKS.find(p=>p.id===id);
+const parkByK=k=>PARKS.find(p=>p.k===k);
 
 async function getJSON(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.json()}
+function indexLive(){st.liveById={};for(const e of st.live||[])st.liveById[e.id]=e}
 async function load(force){
   const btn=$('#refresh');btn.classList.add('spin');
   const now=Date.now();
   try{
     const jobs=[];
-    if(force||now-st.liveAt>LIVE_MS-5e3)jobs.push(getJSON(`${API}/entity/${DEST}/live`).then(d=>{st.live=d.liveData||[];st.liveAt=Date.now();store.set('live',{at:st.liveAt,d:st.live})}));
+    if(force||now-st.liveAt>LIVE_MS-5e3)jobs.push(getJSON(`${API}/entity/${DEST}/live`).then(d=>{st.live=d.liveData||[];st.liveAt=Date.now();indexLive();store.set('live',{at:st.liveAt,d:st.live})}));
     if(force||now-st.schedAt>SCHED_MS)jobs.push(Promise.all(PARKS.map(p=>getJSON(`${API}/entity/${p.id}/schedule`).then(d=>{st.sched[p.id]=d.schedule||[]}))).then(()=>{st.schedAt=Date.now();store.set('sched',{at:st.schedAt,d:st.sched})}));
+    if(force||now-st.wxAt>WX_MS)jobs.push(getJSON(WX_URL).then(d=>{st.wx=d;st.wxAt=Date.now();store.set('wx',{at:st.wxAt,d})}).catch(()=>{}));
     await Promise.all(jobs);st.err='';
   }catch(e){
     st.err='Couldn’t reach the live feed — showing the last data saved on this phone.';
-    if(!st.live){const c=store.get('live',null);if(c){st.live=c.d;st.liveAt=c.at}}
+    if(!st.live){const c=store.get('live',null);if(c){st.live=c.d;st.liveAt=c.at;indexLive()}}
     if(!Object.keys(st.sched).length){const c=store.get('sched',null);if(c){st.sched=c.d;st.schedAt=c.at}}
   }
+  if(!st.wx){const c=store.get('wx',null);if(c){st.wx=c.d;st.wxAt=c.at}}
   btn.classList.remove('spin');render();
 }
 
-/* ---------- data helpers ---------- */
+/* ---------- park data helpers ---------- */
 const byPark=id=>(st.live||[]).filter(e=>e.parkId===id);
-function todaySched(id,date=ymd(new Date())){return (st.sched[id]||[]).filter(s=>s.date===date)}
-function hoursLine(id,date){
-  const s=todaySched(id,date);const op=s.find(x=>x.type==='OPERATING');
-  const extras=s.filter(x=>x.type!=='OPERATING').map(x=>({label:/special ticketed/i.test(x.description||'')?eventName(id,x.date):(x.description||cleanType(x.type)),txt:`${fmtT(x.openingTime)}–${fmtT(x.closingTime)}`}));
+const schedOn=(id,date=today())=>(st.sched[id]||[]).filter(s=>s.date===date);
+const cleanType=t=>({TICKETED_EVENT:'Ticketed event',EXTRA_HOURS:'Extra hours',INFO:'Info',CLOSED:'Closed'}[t]||t);
+function hoursLine(id,date=today()){
+  const s=schedOn(id,date);const op=s.find(x=>x.type==='OPERATING');
+  const extras=s.filter(x=>x.type!=='OPERATING').map(x=>({ticketed:/special ticketed/i.test(x.description||''),label:/special ticketed/i.test(x.description||'')?eventName(id,x.date):(x.description||cleanType(x.type)),txt:`${fmtT(x.openingTime)}–${fmtT(x.closingTime)}`}));
   return {op,main:op?`${fmtT(op.openingTime)} – ${fmtT(op.closingTime)}`:(s.length?'':'Closed / not posted'),extras,purchases:op?.purchases||[]};
 }
-const cleanType=t=>({TICKETED_EVENT:'Ticketed event',EXTRA_HOURS:'Extra hours',INFO:'Info',CLOSED:'Closed'}[t]||t);
-const parkOf=id=>PARKS.find(p=>p.id===id);
-/* Special ticketed event names: the schedule only says "Special Ticketed Event", so read the
-   name from that park's party shows ("… at Mickey's Very Merry Christmas Party"), falling back
-   to the park's known seasonal event for that month. */
+/* Name a "Special Ticketed Event": first from the park's party shows in the live feed ("… at Disney Jollywood Nights"),
+   then from the EVENTS list by date, otherwise the generic label. */
 function eventName(id,date){
-  const p=parkOf(id),m=+date.slice(5,7);
+  const p=parkOf(id);const norm=s=>s.toLowerCase().replace(/[’']/g,'');
   const fromFeed=[...new Set(byPark(id).map(e=>(String(e.name).match(/ at ((?:Disney |Mickey)[^]*?(?:Party|Nights?|Bash|After Hours))$/i)||[])[1]).filter(Boolean).map(cleanName))];
-  const season=(p?.events||[]).find(([a,b])=>m>=a&&m<=b)?.[2];
-  if(season&&fromFeed.some(n=>n.toLowerCase().replace(/[’']/g,'')===season.toLowerCase().replace(/[’']/g,'')))return season;
+  const listed=EVENTS.find(e=>e.ticket&&e.park===p?.k&&e.start&&date>=e.start&&date<=e.end&&(!e.nights||e.nights.includes(date)));
+  if(listed&&(!fromFeed.length||fromFeed.some(n=>norm(n)===norm(listed.name))))return listed.name;
   if(fromFeed.length===1)return fromFeed[0];
-  return season||'Special Ticketed Event';
+  return listed?.name||'Special Ticketed Event';
 }
 /* Open = inside regular hours, Early Entry or Extended Evening (not a separately ticketed party). */
-function windows(id){return (st.sched[id]||[]).filter(x=>x.type==='OPERATING'||/early entry|extended evening/i.test(x.description||''))}
+const windows=id=>(st.sched[id]||[]).filter(x=>x.type==='OPERATING'||/early entry|extended evening/i.test(x.description||''));
 function isOpen(id){const now=Date.now();return windows(id).some(x=>now>=+new Date(x.openingTime)&&now<+new Date(x.closingTime))}
 function nextOpen(id){const now=Date.now();return (st.sched[id]||[]).filter(x=>x.type==='OPERATING'&&+new Date(x.openingTime)>now).sort((a,b)=>new Date(a.openingTime)-new Date(b.openingTime))[0]}
-function nextOpenTxt(id){const n=nextOpen(id);if(!n)return '';const d=n.date===ymd(new Date())?'today':n.date===ymd(new Date(Date.now()+864e5))?'tomorrow':dayName(n.date);return `Opens ${d} at ${fmtT(n.openingTime)}`}
+function nextOpenTxt(id){const n=nextOpen(id);if(!n)return '';const d=n.date===today()?'today':n.date===ymd(new Date(Date.now()+864e5))?'tomorrow':dayName(n.date);return `Opens ${d} at ${fmtT(n.openingTime)}`}
+const dur=ms=>{const m=Math.round(ms/60e3),h=Math.floor(m/60);return h?`${h}h ${m%60}m`:`${m}m`};
 function openStatus(id){
   const {op}=hoursLine(id);const now=Date.now();
-  const dur=ms=>{const m=Math.round(ms/60e3),h=Math.floor(m/60);return h?`${h}h ${m%60}m`:`${m}m`};
   if(isOpen(id)){const end=Math.max(...windows(id).filter(x=>now>=+new Date(x.openingTime)&&now<+new Date(x.closingTime)).map(x=>+new Date(x.closingTime)));return `Open · closes in ${dur(end-now)}`}
   if(op&&now<+new Date(op.openingTime))return `Opens in ${dur(+new Date(op.openingTime)-now)}`;
   return 'Closed'+(nextOpenTxt(id)?' · '+nextOpenTxt(id):'');
 }
+function closeTime(id){const op=hoursLine(id).op;return op?+new Date(op.closingTime):0}
 const wait=e=>e.queue?.STANDBY?.waitTime??null;
-function trend(e){
-  const f=e.forecast;const w=wait(e);if(!f||w==null)return '';
-  const now=Date.now();const nxt=f.find(x=>+new Date(x.time)>now+30*60e3);
-  if(!nxt||nxt.waitTime==null)return '';const d=nxt.waitTime-w;
-  if(d<=-10)return `<span class="tag up">↓ ~${nxt.waitTime} by ${fmtT(nxt.time)}</span>`;
-  if(d>=15)return `<span class="tag">↑ ~${nxt.waitTime} by ${fmtT(nxt.time)}</span>`;return '';
+
+/* ---------- ride timing from Disney's hourly forecast ---------- */
+function fcNow(e){const now=Date.now();return (e.forecast||[]).find(x=>{const t=+new Date(x.time);return now>=t&&now<t+36e5})}
+function belowUsual(e){
+  const w=wait(e),f=fcNow(e);if(w==null||!f||f.waitTime==null||f.waitTime<20||e.status!=='OPERATING')return null;
+  const save=f.waitTime-w;return save>=Math.max(10,f.waitTime*0.3)?{exp:f.waitTime,save}:null;
+}
+function bestLater(e){
+  const w=wait(e);if(w==null||e.status!=='OPERATING')return null;
+  const now=Date.now(),close=closeTime(e.parkId)||Infinity;
+  const fut=(e.forecast||[]).filter(x=>x.waitTime!=null&&+new Date(x.time)>now&&+new Date(x.time)<close-30*60e3);
+  if(!fut.length)return null;const best=fut.reduce((a,b)=>b.waitTime<a.waitTime?b:a);
+  return best.waitTime<=w-15?best:null;
+}
+function timingTags(e){
+  const b=belowUsual(e),l=bestLater(e),out=[];
+  if(b)out.push(`<span class="tag good">Good time · usually ~${b.exp}</span>`);
+  else if(l)out.push(`<span class="tag">Better later · ~${l.waitTime} at ${fmtT(l.time)}</span>`);
+  return out.join('');
 }
 function llTags(e){
   const q=e.queue||{},out=[];
@@ -209,13 +314,15 @@ function llTags(e){
   if(bg)out.push(`<span class="tag ll">Boarding group${bg.currentGroupStart?` ${bg.currentGroupStart}–${bg.currentGroupEnd}`:''}</span>`);
   return out.join('');
 }
+
+/* ---------- shows ---------- */
 const isMeet=n=>/^(Meet|Greet)|Character|Meet /i.test(n);
 const marqueeDef=(p,e)=>!/ at /i.test(e.name)&&(p.marquee||[]).find(m=>m.re.test(cleanName(e.name)));
 function marquee(p){
   const ents=byPark(p.id).filter(e=>e.entityType==='SHOW');
   return (p.marquee||[]).map(m=>{
     const e=ents.find(x=>!/ at /i.test(x.name)&&m.re.test(cleanName(x.name)));
-    const ts=(e?.showtimes||[]).filter(s=>ymd(new Date(s.startTime))===ymd(new Date())).map(s=>s.startTime).sort();
+    const ts=(e?.showtimes||[]).filter(s=>ymd(new Date(s.startTime))===today()).map(s=>s.startTime).sort();
     return {label:m.label,ts};
   });
 }
@@ -223,15 +330,62 @@ function shows(id,{meets=st.meets}={}){
   const p=parkOf(id);
   return byPark(id).filter(e=>e.entityType==='SHOW'&&(e.showtimes||[]).length&&(meets||!isMeet(e.name))&&!marqueeDef(p,e));
 }
-const timeChip=(t,cls)=>`<span class="${cls}">${fmtT(t)}</span>`;
 function marqueeBlock(p){
   const ms=marquee(p);if(!ms.length)return '';const now=Date.now();
-  return `<div class="marq"><div class="lbl">Tonight’s nighttime spectacular${ms.length>1?'s':''}</div>${ms.map(m=>`<div class="m"><span>${esc(m.label)}</span>${m.ts.length?`<b>${m.ts.map(t=>timeChip(t,+new Date(t)<now-20*60e3?'gone':'')).join(', ')}</b>`:'<i>Not scheduled tonight</i>'}</div>`).join('')}</div>`;
+  return `<div class="marq"><div class="lbl">Tonight’s nighttime spectacular${ms.length>1?'s':''}</div>${ms.map(m=>`<div class="m"><span>${esc(m.label)}</span>${m.ts.length?`<b>${m.ts.map(t=>`<span class="${+new Date(t)<now-20*60e3?'gone':''}">${fmtT(t)}</span>`).join(', ')}</b>`:`<i>${hoursLine(p.id).extras.some(x=>x.ticketed)?'Not tonight · party night':'Not scheduled tonight'}</i>`}</div>`).join('')}</div>`;
+}
+const parklessShow=re=>(st.live||[]).find(e=>!e.parkId&&e.entityType==='SHOW'&&re.test(e.name));
+function tonightItems(){
+  const out=[];
+  for(const p of THEME)for(const m of marquee(p))for(const t of m.ts)out.push({t,name:m.label,where:p.short,c:p.c});
+  const ewp=parklessShow(/Electrical Water Pageant/i),dtl=parklessShow(/Drawn to Life/i);
+  for(const [e,label,where] of [[ewp,'Electrical Water Pageant','Bay Lake & Seven Seas Lagoon'],[dtl,'Drawn to Life (Cirque du Soleil)','Disney Springs']])
+    for(const s of e?.showtimes||[])if(ymd(new Date(s.startTime))===today())out.push({t:s.startTime,name:label,where,c:'#6a6f9c'});
+  return out.sort((a,b)=>new Date(a.t)-new Date(b.t));
+}
+
+/* ---------- events ---------- */
+const activeEvents=(k,date=today())=>EVENTS.filter(e=>e.start&&!e.ticket&&date>=e.start&&date<=e.end&&(k==null||e.park===k||e.park==='all'));
+function eventNights(ev){
+  const t=today();const p=parkByK(ev.park);
+  if(ev.nights)return ev.nights.filter(d=>d>=t).map(d=>({date:d,txt:''}));
+  if(!p)return [];
+  return (st.sched[p.id]||[]).filter(x=>/special ticketed/i.test(x.description||'')&&x.date>=t&&x.date>=ev.start&&x.date<=ev.end&&eventName(p.id,x.date)===ev.name)
+    .map(x=>({date:x.date,txt:`${fmtT(x.openingTime)}–${fmtT(x.closingTime)}`}));
+}
+function evWhen(ev){
+  const t=today();if(ev.tba)return ev.tba;
+  const range=`${shortDate(ev.start)} – ${shortDate(ev.end)}${ev.end.slice(0,4)!==t.slice(0,4)||ev.start.slice(0,4)!==ev.end.slice(0,4)?', '+ev.end.slice(0,4):''}`;
+  if(t>=ev.start&&t<=ev.end){const left=daysBetween(t,ev.end);return `${range} · ${left===0?'last day today':left===1?'ends tomorrow':left+' days left'}`}
+  if(t<ev.start){const n=daysBetween(t,ev.start);return `${range} · ${n===1?'starts tomorrow':'starts in '+n+' days'}`}
+  return `${range} · ended`;
+}
+
+/* ---------- weather ---------- */
+function wxIcon(code,isNight){const c=+code;const id=c===0||c===1?(isNight?'i-part':'i-sun'):c===2?'i-part':c===3?'i-cloud':c===45||c===48?'i-fog':c>=95?'i-storm':(c>=51&&c<=67)||(c>=80&&c<=82)?'i-rain':'i-cloud';return `<svg aria-hidden="true"><use href="#${id}"/></svg>`}
+const wxWord=c=>{c=+c;return c===0?'Clear':c===1?'Mostly clear':c===2?'Partly cloudy':c===3?'Cloudy':c===45||c===48?'Fog':c>=95?'Thunderstorms':c>=80?'Showers':c>=61?'Rain':c>=51?'Drizzle':'Cloudy'};
+function wxHours(n=10){
+  const w=st.wx;if(!w?.hourly)return [];const now=Date.now();
+  const out=[];w.hourly.time.forEach((t,i)=>{const ms=+new Date(t+':00-05:00');if(ms>now-36e5&&out.length<n)out.push({t:ms,temp:Math.round(w.hourly.temperature_2m[i]),p:w.hourly.precipitation_probability[i]??0,code:w.hourly.weather_code[i]})});
+  return out;
+}
+function wxMini(){const w=st.wx;if(!w?.current)return '';const p=Math.max(0,...wxHours(3).map(h=>h.p));return `<span class="wx">${Math.round(w.current.temperature_2m)}°${p>=30?` · ${p}% rain`:''}</span>`}
+function weatherCard(){
+  const w=st.wx;if(!w?.current)return '';
+  const hrs=wxHours(10);const sunset=w.daily?.sunset?.[0];const night=sunset&&Date.now()>+new Date(sunset+':00-05:00');
+  const wet=hrs.find(h=>h.p>=50);
+  const hourLbl=ms=>new Date(ms).toLocaleTimeString('en-US',{timeZone:TZ,hour:'numeric'}).replace(' AM','a').replace(' PM','p');
+  return `<section class="card"><div class="wxcard">
+    <div class="wxnow">${wxIcon(w.current.weather_code,night)}<span class="num">${Math.round(w.current.temperature_2m)}°</span></div>
+    <div class="wxtxt"><b>${wxWord(w.current.weather_code)} at the parks</b>High ${Math.round(w.daily.temperature_2m_max[0])}° · low ${Math.round(w.daily.temperature_2m_min[0])}°${sunset?` · sunset ${fmtT(sunset+':00-05:00')}`:''}</div>
+    ${wet?`<div class="wxalert">Rain likely ${wet===hrs[0]?'now':'around '+hourLbl(wet.t)} (${wet.p}%)</div>`:''}
+    <div class="hours">${hrs.map((h,i)=>`<div class="hr">${i===0?'Now':hourLbl(h.t)}${wxIcon(h.code,sunset&&h.t>+new Date(sunset+':00-05:00'))}<b>${h.temp}°</b><span class="p${h.p>=50?' hi':''}">${h.p}%</span></div>`).join('')}</div>
+  </div></section>`;
 }
 
 /* ---------- rendering ---------- */
 function chips(){
-  const items=[{k:'all',short:'All parks'},...PARKS.slice(0,4),{k:'water',short:'Water parks'}];
+  const items=[{k:'now',short:'Right now'},...THEME,{k:'resorts',short:'Resorts'},{k:'events',short:'Events'},{k:'water',short:'Water parks'}];
   $('#chips').innerHTML=items.map(p=>`<button class="chip" data-v="${p.k}" aria-pressed="${st.view===p.k}">${p.short}</button>`).join('');
 }
 function stamp(){
@@ -240,37 +394,60 @@ function stamp(){
   $('#stamp').textContent=m<1?'Updated just now':`Updated ${m} min ago`;
 }
 function hero(p,{link=false}={}){
-  const h=hoursLine(p.id);
+  const h=hoursLine(p.id);const ev=activeEvents(p.k).filter(e=>e.park===p.k);
   return `<div class="hero${link?' click':''}" style="--pc:${p.c}" ${link?`data-go="${p.k}"`:''}>
+    ${wxMini()}
     <h2>${p.name}</h2>
     <div class="hrs">${h.main}</div>
     <div class="sub">${openStatus(p.id)}${h.extras.map(x=>` · ${esc(x.label)} ${x.txt}`).join('')}</div>
+    ${ev.map(e=>`<span class="evchip">${esc(e.name.replace('EPCOT International ',''))} · through ${shortDate(e.end)}</span>`).join(' ')}
     ${marqueeBlock(p)}
   </div>`;
 }
 const closedMsg=p=>`<div class="closed"><b>Park closed</b>Ride times will appear when ${p.name} opens.${nextOpenTxt(p.id)?' '+nextOpenTxt(p.id)+'.':''}</div>`;
-function rideRow(e,p){
-  const w=wait(e);const op=e.status==='OPERATING';const fav=st.favs.has(e.id);
+function waitBox(e){const w=wait(e),op=e.status==='OPERATING';return op&&w!=null?`<div class="wait ${wclass(w)}"><span class="num">${w}</span><small>min</small></div>`:`<div class="wait w-x"><span class="num">${op?'Open':e.status==='DOWN'?'Down':'—'}</span></div>`}
+function rideRow(e,{park=false}={}){
+  const op=e.status==='OPERATING';const fav=st.favs.has(e.id);const p=parkOf(e.parkId);
   const statusTag=e.status==='DOWN'?'<span class="tag down">Temporarily down</span>':e.status==='REFURBISHMENT'?'<span class="tag down">Refurbishment</span>':e.status==='CLOSED'?'<span class="tag">Closed</span>':'';
-  const box=op&&w!=null?`<div class="wait ${wclass(w)}"><span class="num">${w}</span><small>min</small></div>`:`<div class="wait w-x"><span class="num">${op?'Open':e.status==='DOWN'?'Down':'—'}</span></div>`;
   return `<div class="row"><button class="star" data-fav="${e.id}" aria-pressed="${fav}" aria-label="Favorite ${esc(e.name)}">★</button>
-   <div class="nm">${esc(cleanName(e.name))}<div class="meta">${statusTag}${op?llTags(e)+trend(e):''}</div></div>${box}</div>`;
+   <div class="nm">${esc(cleanName(e.name))}<div class="meta">${park&&p?`<span class="tag park" style="--pc:${p.c}">${p.short}</span>`:''}${statusTag}${op?timingTags(e)+llTags(e):''}</div></div>${waitBox(e)}</div>`;
 }
-function overview(list){
+function goodNow(parks){
+  return parks.filter(p=>isOpen(p.id)).flatMap(p=>byPark(p.id).filter(e=>e.entityType==='ATTRACTION'&&belowUsual(e))).sort((a,b)=>belowUsual(b).save-belowUsual(a).save);
+}
+function eventStrip(){
+  const t=today();const items=[];
+  for(const e of EVENTS.filter(e=>e.start&&!e.ticket&&t>=e.start&&t<=e.end))items.push({b:e.name.replace('EPCOT International ','EPCOT '),s:`Through ${shortDate(e.end)}`});
+  for(const p of THEME)for(const x of hoursLine(p.id).extras.filter(x=>x.ticketed))items.push({b:x.label,s:`Tonight ${x.txt} · ${p.short}`});
+  const next=EVENTS.filter(e=>e.start&&e.start>t).sort((a,b)=>a.start<b.start?-1:1)[0];
+  if(next)items.push({b:next.name.replace('EPCOT International ','EPCOT '),s:evWhen(next).split(' · ')[1]});
+  return items.length?`<div class="evstrip">${items.map(i=>`<button data-v="events"><b>${esc(i.b)}</b><span>${esc(i.s)}</span></button>`).join('')}</div>`:'';
+}
+function tonightCard(){
+  const items=tonightItems();if(!items.length)return '';const now=Date.now();
+  return `<section class="card"><div class="sect" style="margin:12px 14px 4px">Tonight across Walt Disney World</div>${items.map(i=>`<div class="tl${+new Date(i.t)<now-20*60e3?' past':''}"><b>${fmtT(i.t)}</b><span>${esc(i.name)}</span><span class="tag park" style="--pc:${i.c}">${esc(i.where)}</span></div>`).join('')}</section>`;
+}
+function parkCards(list){
   return `<div class="grid">${list.map(p=>{
+    if(!isOpen(p.id))return `<section class="card">${hero(p,{link:true})}${closedMsg(p)}<div class="row"><span class="nm"></span><button class="tog" data-go="${p.k}">${p.short} shows &amp; hours →</button></div></section>`;
     const rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
     const open=rides.filter(e=>e.status==='OPERATING');const ws=open.map(wait).filter(w=>w!=null);
     const avg=ws.length?Math.round(ws.reduce((a,b)=>a+b,0)/ws.length):null;
     const favs=rides.filter(e=>st.favs.has(e.id));
     const top=(favs.length?favs:open.filter(e=>wait(e)!=null)).sort((a,b)=>(wait(b)??-1)-(wait(a)??-1)).slice(0,favs.length?8:4);
-    if(!isOpen(p.id))return `<section class="card">${hero(p,{link:true})}${closedMsg(p)}<div class="row"><span class="nm"></span><button class="tog" data-go="${p.k}">${p.short} shows &amp; hours →</button></div></section>`;
     return `<section class="card">${hero(p,{link:true})}
       <div class="stats"><div><span class="num">${open.length}</span><small>rides open</small></div>
       <div><span class="num">${avg??'—'}</span><small>avg wait</small></div>
       <div><span class="num">${ws.length?Math.max(...ws):'—'}</span><small>longest</small></div></div>
-      ${top.length?`<div class="toplist">${top.map(e=>rideRow(e,p)).join('')}</div>`:`<div class="empty">No wait times posted right now.</div>`}
-      ${top.length?`<div class="row"><span class="nm" style="font-weight:500;color:var(--mute);font-size:14px">${favs.length?'Your favorites':'Longest waits right now'}</span><button class="tog" data-go="${p.k}">All ${p.short} →</button></div>`:''}
+      ${top.length?`<div>${top.map(e=>rideRow(e)).join('')}</div>`:`<div class="empty">No wait times posted right now.</div>`}
+      <div class="row"><span class="nm" style="font-weight:500;color:var(--mute);font-size:14px">${favs.length?'Your favorites':'Longest waits right now'}</span><button class="tog" data-go="${p.k}">All ${p.short} →</button></div>
     </section>`}).join('')}</div>`;
+}
+function homeView(){
+  const good=goodNow(THEME).slice(0,6);
+  return `${eventStrip()}<div class="grid">${weatherCard()}${tonightCard()}
+    ${good.length?`<section class="card"><div class="sect" style="margin:12px 14px 4px">Good time to ride — shorter than usual right now</div>${good.map(e=>rideRow(e,{park:true})).join('')}</section>`:''}</div>
+    <div class="sect" style="margin-top:22px">Parks</div>${parkCards(THEME)}`;
 }
 function ridesView(p){
   if(!isOpen(p.id))return `<div class="card">${closedMsg(p)}</div>`;
@@ -279,11 +456,36 @@ function ridesView(p){
   if(st.q)rides=rides.filter(e=>e.name.toLowerCase().includes(st.q));
   const cmp=st.sort==='wait'?(a,b)=>(wait(b)??-1)-(wait(a)??-1)||a.name.localeCompare(b.name):(a,b)=>cleanName(a.name).localeCompare(cleanName(b.name));
   const favs=rides.filter(e=>st.favs.has(e.id)).sort(cmp),rest=rides.filter(e=>!st.favs.has(e.id)).sort(cmp);
+  const good=st.q?[]:goodNow([p]);
   return `<div class="tools"><input type="search" id="q" placeholder="Search rides" value="${esc(st.q)}" autocomplete="off">
     <button class="tog" id="sort">Sort: ${st.sort==='wait'?'Longest wait':'A–Z'}</button>
     <label class="tog"><input type="checkbox" id="openOnly" ${st.openOnly?'checked':''}> Open only</label></div>
-    ${favs.length?`<div class="sect">Favorites</div><div class="card">${favs.map(e=>rideRow(e,p)).join('')}</div><div class="sect">Everything else</div>`:''}
-    <div class="card">${rest.length?rest.map(e=>rideRow(e,p)).join(''):'<div class="empty">Nothing matches.</div>'}</div>`;
+    ${good.length?`<div class="sect">Good time to ride</div><div class="card">${good.map(e=>rideRow(e)).join('')}</div>`:''}
+    ${favs.length?`<div class="sect">Favorites</div><div class="card">${favs.map(e=>rideRow(e)).join('')}</div>`:''}
+    <div class="sect">${favs.length||good.length?'All rides':'Rides'}</div>
+    <div class="card">${rest.length?rest.map(e=>rideRow(e)).join(''):'<div class="empty">Nothing matches.</div>'}</div>`;
+}
+function llView(p){
+  const h=hoursLine(p.id);const pur=h.purchases;const t=today();
+  const pkg=pur.filter(x=>x.type==='PACKAGE');const singles=pur.filter(x=>x.type==='ATTRACTION');
+  const rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
+  const findRide=nm=>{const n=cleanName(nm.replace(/^Lightning Lane for /i,'')).toLowerCase();return rides.find(e=>cleanName(e.name).toLowerCase()===n)||rides.find(e=>cleanName(e.name).toLowerCase().includes(n)||n.includes(cleanName(e.name).toLowerCase()))};
+  const tomorrow=hoursLine(p.id,ymd(new Date(Date.now()+864e5))).purchases.filter(x=>x.type==='PACKAGE');
+  const mp=rides.filter(e=>e.queue?.RETURN_TIME);
+  const avail=mp.filter(e=>e.queue.RETURN_TIME.state==='AVAILABLE'&&e.queue.RETURN_TIME.returnStart).sort((a,b)=>new Date(a.queue.RETURN_TIME.returnStart)-new Date(b.queue.RETURN_TIME.returnStart));
+  const gone=mp.filter(e=>!avail.includes(e));
+  const price=x=>x.price?.formatted||'—';
+  return `<div class="sect">Lightning Lane Multi Pass</div><div class="card">
+    ${pkg.length?pkg.map(x=>`<div class="row"><div class="nm">Today<div class="meta">${x.available===false?'<span class="tag down">Sold out</span>':'<span class="tag good">Available</span>'}</div></div><div class="side"><b>${price(x)}</b>per person</div></div>`).join(''):'<div class="empty">No Multi Pass price posted for today.</div>'}
+    ${tomorrow.map(x=>`<div class="row"><div class="nm">Tomorrow<div class="meta">${x.available===false?'<span class="tag down">Sold out</span>':'<span class="tag">On sale</span>'}</div></div><div class="side"><b>${price(x)}</b>per person</div></div>`).join('')}
+  </div>
+  ${singles.length?`<div class="sect">Lightning Lane Single Pass</div><div class="card">${singles.map(x=>{const r=findRide(x.name);const pr=r?.queue?.PAID_RETURN_TIME;const ret=pr?.state==='AVAILABLE'&&pr.returnStart?`Next return ${fmtT(pr.returnStart)}`:'';
+    return `<div class="row"><div class="nm">${esc(cleanName(x.name.replace(/^Lightning Lane for /i,'')))}<div class="meta">${x.available===false||pr?.state==='FINISHED'?'<span class="tag down">Sold out</span>':`<span class="tag good">${ret||'Available'}</span>`}${r&&wait(r)!=null?`<span class="tag">Standby ${wait(r)} min</span>`:''}</div></div><div class="side"><b>${price(x)}</b>per person</div></div>`}).join('')}</div>`:''}
+  <div class="sect">Multi Pass return times right now</div><div class="card">
+    ${avail.length?avail.map(e=>`<div class="row"><div class="nm">${esc(cleanName(e.name))}<div class="meta">${wait(e)!=null?`<span class="tag">Standby ${wait(e)} min</span>`:''}</div></div><div class="side"><b>${fmtT(e.queue.RETURN_TIME.returnStart)}</b>next return</div></div>`).join(''):`<div class="empty">${isOpen(p.id)?'No return times available right now.':'Return times appear on the day, once Lightning Lane opens.'}</div>`}
+    ${gone.length?`<div class="note">Gone for today: ${gone.map(e=>esc(cleanName(e.name))).join(', ')}</div>`:''}
+  </div>
+  <p class="foot" style="margin-top:12px">Buy and book in the My Disney Experience app. Prices are per person, before tax.</p>`;
 }
 function showsView(p){
   const now=Date.now();
@@ -308,26 +510,68 @@ function showsView(p){
     <div class="card">${list.length?list.map(row).join(''):'<div class="empty">No show times posted for today.</div>'}</div>`;
 }
 function hoursView(list){
-  const days=[...new Set(list.flatMap(p=>(st.sched[p.id]||[]).map(s=>s.date)))].sort().filter(d=>d>=ymd(new Date())).slice(0,10);
+  const days=[...new Set(list.flatMap(p=>(st.sched[p.id]||[]).map(s=>s.date)))].sort().filter(d=>d>=today()).slice(0,10);
   return list.map(p=>`<div class="sect">${list.length>1?p.name:'Next 10 days'}</div><div class="card" style="--pc:${p.c}"><table class="hrsT"><tbody>${days.map(d=>{
-    const h=hoursLine(p.id,d);const pass=h.purchases.find(x=>x.type==='PACKAGE');
-    return `<tr class="${d===ymd(new Date())?'today':''}"><td>${d===ymd(new Date())?'Today':dayName(d)}</td><td>${h.main||'—'}${h.extras.map(x=>`<span class="x">${esc(x.label)} ${x.txt}</span>`).join('')}${d===ymd(new Date())?marquee(p).filter(m=>m.ts.length).map(m=>`<span class="x">${esc(m.label)} ${m.ts.map(fmtT).join(', ')}</span>`).join(''):''}${pass?.price?`<span class="x">LL Multi Pass ${pass.price.formatted}${pass.available===false?' (sold out)':''}</span>`:''}</td></tr>`}).join('')}</tbody></table></div>`).join('');
+    const h=hoursLine(p.id,d);const pass=h.purchases.find(x=>x.type==='PACKAGE');const evs=activeEvents(p.k,d).filter(e=>e.park===p.k);
+    return `<tr class="${d===today()?'today':''}"><td>${d===today()?'Today':dayName(d)}</td><td>${h.main||'—'}${h.extras.map(x=>`<span class="x">${esc(x.label)} ${x.txt}</span>`).join('')}${d===today()?marquee(p).filter(m=>m.ts.length).map(m=>`<span class="x">${esc(m.label)} ${m.ts.map(fmtT).join(', ')}</span>`).join(''):''}${evs.map(e=>`<span class="x">${esc(e.name.replace('EPCOT International ',''))}</span>`).join('')}${pass?.price?`<span class="x">LL Multi Pass ${pass.price.formatted}${pass.available===false?' (sold out)':''}</span>`:''}</td></tr>`}).join('')}</tbody></table></div>`).join('');
+}
+function resortsView(){
+  const q=st.rq;const now=Date.now();
+  const ewp=parklessShow(/Electrical Water Pageant/i),dtl=parklessShow(/Drawn to Life/i);
+  const dsRides=(st.live||[]).filter(e=>!e.parkId&&e.entityType==='ATTRACTION'&&/Aerophile|Amphicar|Carousel|Train Express/i.test(e.name));
+  const tchips=e=>(e?.showtimes||[]).filter(s=>ymd(new Date(s.startTime))===today()).map(s=>`<span class="t${+new Date(s.startTime)<now?' past':' next'}">${fmtT(s.startTime)}</span>`).join('')||'<span class="tag">Not scheduled tonight</span>';
+  const isLounge=n=>/Lounge|Pool Bar|Grotto|Tiki|Libations|Margaritas|Spirits|Grogs|AbracadaBar|Cove Bar|Stargazers|Belle Vue|Cantina|Laguna Bar|Wine Bar$|Hangar Bar|Tavern|Sand Bar|Chill|Stir|Hurly/i.test(n)&&!/Restaurant|Grill|Dining/i.test(n);
+  const walkup=id=>{const e=st.liveById[id];if(!e)return '';const w=e.queue?.STANDBY?.waitTime??(e.diningAvailability||[]).find(d=>d.partySize===2)?.waitTime;return w!=null?`<span class="tag good">Walk-up ~${w} min</span>`:''};
+  const item=(r,[id,n])=>`<li><span>${esc(cleanName(n))} ${walkup(id)}</span><a href="https://www.google.com/search?q=${encodeURIComponent(cleanName(n)+' '+r.name+' Disney World menu')}" target="_blank" rel="noopener">Menu ↗</a></li>`;
+  const resorts=RESORTS.map(r=>({...r,items:q?r.items.filter(([,n])=>n.toLowerCase().includes(q)||r.name.toLowerCase().includes(q)):r.items})).filter(r=>r.items.length);
+  const groups=RES_GROUPS.map(([g,label])=>({label,rs:resorts.filter(r=>r.g===g)})).filter(x=>x.rs.length);
+  return `<div class="sect">Tonight around the resorts</div><div class="card">
+     <div class="row"><div class="nm">Electrical Water Pageant<div class="meta" style="font-weight:400;color:var(--mute);font-size:14px">Floating light parade on Seven Seas Lagoon and Bay Lake, passing the monorail resorts, Wilderness Lodge and Fort Wilderness. Time shown is Disney’s listed start.</div><div class="times">${tchips(ewp)}</div></div></div>
+     <div class="row"><div class="nm">Drawn to Life · Cirque du Soleil<div class="meta" style="font-weight:400;color:var(--mute);font-size:14px">Disney Springs · separate ticket</div><div class="times">${tchips(dtl)}</div></div></div>
+     ${dsRides.length?`<div class="row"><div class="nm">Disney Springs extras<div class="meta">${dsRides.map(e=>`<span class="tag${e.status==='OPERATING'?' good':e.status==='DOWN'?' down':''}">${esc(cleanName(e.name).replace(/ – .*/,''))}: ${e.status==='OPERATING'?'open':e.status==='DOWN'?'down':'closed'}</span>`).join('')}</div></div></div>`:''}
+   </div>
+   <div class="tools" style="margin-top:16px"><input type="search" id="rq" placeholder="Search resorts, restaurants & lounges" value="${esc(q)}" autocomplete="off"></div>
+   ${groups.length?groups.map(g=>`<div class="sect">${g.label}</div><div class="card">${g.rs.map(r=>{
+      const din=r.items.filter(([,n])=>!isLounge(n)),lo=r.items.filter(([,n])=>isLounge(n));
+      return `<details class="res" data-r="${esc(r.name)}"${q||st.openRes.has(r.name)?' open':''}><summary><span class="nm">${esc(r.name)}<small>${esc(r.tr)} · ${r.items.length} places</small></span></summary><div class="dine">
+        ${din.length?`<h4>Dining</h4><ul>${din.map(x=>item(r,x)).join('')}</ul>`:''}${lo.length?`<h4>Lounges & bars</h4><ul>${lo.map(x=>item(r,x)).join('')}</ul>`:''}</div></details>`}).join('')}</div>`).join(''):'<div class="card"><div class="empty">Nothing matches.</div></div>'}
+   <p class="foot" style="margin-top:12px">Menu links search for Disney’s menu page. Reservations are in the My Disney Experience app.</p>`;
+}
+function eventsView(){
+  const t=today();
+  const now=EVENTS.filter(e=>e.start&&t>=e.start&&t<=e.end).sort((a,b)=>a.end<b.end?-1:1);
+  const soon=EVENTS.filter(e=>e.start&&t<e.start).sort((a,b)=>a.start<b.start?-1:1);
+  const tba=EVENTS.filter(e=>e.tba);
+  const where=e=>e.park==='all'?'All parks & resorts':parkByK(e.park)?.name||'';
+  const row=e=>{const p=parkByK(e.park);const nights=e.ticket&&e.start?eventNights(e):[];
+    return `<div class="evrow" style="--pc:${p?.c||'#5b4bdb'}"><h3>${esc(e.name)}${e.ticket?'<span class="pill tix">Separate ticket</span>':'<span class="pill">Included with admission</span>'}</h3>
+      <div class="when">${esc(where(e))} · ${esc(evWhen(e))}</div><p>${esc(e.blurb)}</p>
+      ${nights.length?`<div class="times">${nights.slice(0,8).map(n=>`<span class="t${n.date===t?' next':''}">${n.date===t?'Tonight':dayName(n.date)}${n.txt?' · '+n.txt:''}</span>`).join('')}${nights.length>8?`<span class="tag">+${nights.length-8} more nights</span>`:''}</div>`:''}</div>`};
+  return `${now.length?`<div class="sect">Happening now</div><div class="card">${now.map(row).join('')}</div>`:''}
+    ${soon.length?`<div class="sect">Coming up</div><div class="card">${soon.map(row).join('')}</div>`:''}
+    ${tba.length?`<div class="sect">Dates not announced yet</div><div class="card">${tba.map(row).join('')}</div>`:''}
+    <p class="foot" style="margin-top:12px">Party nights come from Disney’s live park calendar. Festival dates as announced by Disney, last checked Nov 25, 2026.</p>`;
 }
 function render(){
   chips();stamp();
   const m=$('#main');const banner=st.err?`<div class="banner">${esc(st.err)}</div>`:'';
   if(!st.live){m.innerHTML=banner+'<div class="empty">Loading live park data…</div>';return}
-  const qFocus=document.activeElement?.id==='q';
-  if(st.view==='all'){m.innerHTML=banner+overview(PARKS.slice(0,4))}
-  else if(st.view==='water'){m.innerHTML=banner+overview(PARKS.slice(4))+hoursView(PARKS.slice(4))}
+  document.querySelectorAll('details.res').forEach(d=>d.open?st.openRes.add(d.dataset.r):st.openRes.delete(d.dataset.r));
+  const focusId=document.activeElement?.id;
+  if(st.view==='now')m.innerHTML=banner+homeView();
+  else if(st.view==='water')m.innerHTML=banner+parkCards(PARKS.slice(4))+hoursView(PARKS.slice(4));
+  else if(st.view==='resorts')m.innerHTML=banner+resortsView();
+  else if(st.view==='events')m.innerHTML=banner+eventsView();
   else{
-    const p=PARKS.find(x=>x.k===st.view);
+    const p=parkByK(st.view)||THEME[0];
+    const tabs=[['rides','Rides'],['ll','<span class="lw">Lightning Lane</span><span class="ln">Lightning</span>'],['shows','Shows'],['hours','Hours']];
+    if(!tabs.some(([k])=>k===st.tab))st.tab='rides';
     m.innerHTML=banner+`<div class="card" style="--pc:${p.c}">${hero(p)}</div>
-      <div class="seg" style="--pc:${p.c}">${['rides','shows','hours'].map(t=>`<button data-tab="${t}" aria-pressed="${st.tab===t}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div>
-      <div style="--pc:${p.c}">${st.tab==='rides'?ridesView(p):st.tab==='shows'?showsView(p):hoursView([p])}</div>`;
+      <div class="seg" style="--pc:${p.c}">${tabs.map(([k,l])=>`<button data-tab="${k}" aria-pressed="${st.tab===k}">${l}</button>`).join('')}</div>
+      <div style="--pc:${p.c}">${st.tab==='rides'?ridesView(p):st.tab==='ll'?llView(p):st.tab==='shows'?showsView(p):hoursView([p])}</div>`;
   }
-  m.insertAdjacentHTML('beforeend',`<p class="foot">Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a> · waits refresh every 5 minutes · times are Orlando time.<br>Unofficial — not affiliated with Disney.</p>`);
-  if(qFocus){const q=$('#q');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+  m.insertAdjacentHTML('beforeend',`<p class="foot">Live park data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a> · weather from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · waits refresh every 5 minutes · times are Orlando time.<br>Unofficial — not affiliated with Disney.</p>`);
+  if(focusId==='q'||focusId==='rq'){const q=document.getElementById(focusId);if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
 }
 
 /* ---------- events ---------- */
@@ -339,7 +583,10 @@ document.addEventListener('click',ev=>{
   else if(t.id==='sort'){st.sort=st.sort==='wait'?'name':'wait';store.set('sort',st.sort);render()}
   else if(t.id==='refresh'){load(true)}
 });
-document.addEventListener('input',ev=>{if(ev.target.id==='q'){st.q=ev.target.value.trim().toLowerCase();render()}});
+document.addEventListener('input',ev=>{
+  if(ev.target.id==='q'){st.q=ev.target.value.trim().toLowerCase();render()}
+  if(ev.target.id==='rq'){st.rq=ev.target.value.trim().toLowerCase();render()}
+});
 document.addEventListener('change',ev=>{
   if(ev.target.id==='openOnly'){st.openOnly=ev.target.checked;store.set('openOnly',st.openOnly);render()}
   if(ev.target.id==='meets'){st.meets=ev.target.checked;store.set('meets',st.meets);render()}
