@@ -13,134 +13,174 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* VOICE: friendly, glanceable, built to be checked twenty times a day in a queue.
-   IDEA: the in-park tip board — big wait numbers on a lit board, one per park.
-   PICTURE: the board itself — each park gets a coloured header band with hours and tonight's spectacular.
+   IDEA: the in-park tip board — big wait numbers on a lit board, one colour per park.
+   PICTURE: the board itself; the home screen is four park tiles you can read in one glance.
    COLOUR and TYPE: midnight-indigo chrome, per-park accents, wait pills on a teal→gold→coral heat scale; Outfit numerals + Inter.
-   LAYOUT: sticky header + chips, then the board; single column on phones, two or three columns on wide screens. */
+   LAYOUT: slim sticky header, bottom tab bar within thumb reach, one column on phones, grid on wide screens. */
 :root{color-scheme:light dark;
 --bg:light-dark(#f4f3fb,#0d0f24);--card:light-dark(#ffffff,#171a38);--ink:light-dark(#171a3a,#eef0ff);
 --mute:light-dark(#5e6288,#a3a8d4);--line:light-dark(#e3e2f2,#272b55);--chrome:#1b1f4a;--soft:light-dark(#eeedf8,#232750);
 --short:light-dark(#0f8f86,#2fc7b9);--mid:light-dark(#b07a00,#f2b631);--long:light-dark(#d2453a,#ff7a6b);
---accent:#5b4bdb}
+--accent:#5b4bdb;--accent-ink:light-dark(#4a3bc4,#b9b0ff);--navh:62px}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;padding-bottom:env(safe-area-inset-bottom)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
 h1,h2,h3,.num{font-family:Outfit,system-ui,sans-serif}
 button{font:inherit;color:inherit}
 a{color:inherit}
-.top{position:sticky;top:0;z-index:5;background:var(--chrome);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) max(4vw,14px) 0}
+:focus-visible{outline:3px solid #ffb800;outline-offset:2px}
+
+/* header */
+.top{position:sticky;top:0;z-index:5;background:var(--chrome);color:#fff;padding:calc(env(safe-area-inset-top) + 8px) max(4vw,14px) 8px}
 .bar{display:flex;align-items:center;gap:10px;max-width:1240px;margin:auto}
-.bar h1{font-size:19px;line-height:1.15;margin:0;font-weight:700;letter-spacing:.2px;flex:1}.bar h1 span{white-space:nowrap}
-.stamp{font-size:13px;color:#c9ccf5;white-space:nowrap}
+.ttl{flex:1}
+.ttl h1{font-size:17px;line-height:1.2;margin:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stamp{font-size:12.5px;color:#c9ccf5;white-space:nowrap}
 .refresh{background:#ffffff1f;border:0;border-radius:999px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer;flex:none}
 .refresh svg{width:20px;height:20px}
 .refresh.spin svg{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.refresh.spin svg{animation:none}}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0;max-width:1240px;margin:auto;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:0;border-radius:999px;padding:10px 16px;min-height:44px;background:#ffffff14;color:#e6e8ff;font-weight:600;cursor:pointer}
-.chip[aria-pressed=true]{background:#fff;color:var(--chrome)}
-.chip:focus-visible,.seg button:focus-visible,.refresh:focus-visible,.star:focus-visible,.tog:focus-visible,summary:focus-visible{outline:3px solid #ffd76a;outline-offset:2px}
-main{max-width:1240px;margin:auto;padding:16px max(4vw,14px) 40px}
+.pswitch{display:flex;gap:4px;max-width:1240px;margin:8px auto 0;background:#ffffff14;border-radius:14px;padding:4px}
+.pswitch:empty{display:none}
+.pswitch button{flex:1;border:0;background:none;color:#d9dcff;border-radius:10px;min-height:40px;font-weight:600;font-size:15px;cursor:pointer;padding:0 4px;white-space:nowrap}
+.pswitch button[aria-pressed=true]{background:var(--pc);color:#fff;box-shadow:0 1px 4px #0005}
+
+/* bottom tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:light-dark(#ffffffef,#14173aef);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:0 0 env(safe-area-inset-bottom)}
+.tabbar div{display:flex;max-width:640px;margin:auto}
+.tabbar button{flex:1;border:0;background:none;height:var(--navh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:600;color:var(--mute);cursor:pointer}
+.tabbar svg{width:24px;height:24px}
+.tabbar button[aria-current=page]{color:var(--accent-ink)}
+main{max-width:1240px;margin:auto;padding:14px max(4vw,14px) calc(var(--navh) + env(safe-area-inset-bottom) + 24px)}
+
+/* shared */
 .banner{background:light-dark(#fff3d6,#3a2e0c);color:light-dark(#6b4a00,#ffd98a);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px;align-items:start}
-.card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 6px 20px -12px #1b1f4a55}
-.hero{background:var(--pc);color:#fff;padding:18px 18px 16px;position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;right:-40px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#ffffff38,#fff0 70%);pointer-events:none}
-.hero h2{margin:0;font-size:clamp(24px,6vw,34px);line-height:1.05;font-weight:700;text-wrap:balance}
-.hero .hrs{font-size:17px;margin-top:6px;font-weight:600}
-.hero .sub{font-size:14px;opacity:.88;margin-top:2px}
-.hero .wx{position:absolute;top:16px;right:16px;z-index:1;font-size:13px;font-weight:600;background:#00000029;border-radius:999px;padding:4px 10px;white-space:nowrap}
-.evchip{display:inline-block;margin-top:8px;font-size:13px;font-weight:600;background:#ffffff2e;border-radius:999px;padding:3px 10px}
-.marq{margin-top:12px;background:#00000029;border-radius:12px;padding:10px 12px}
-.marq .lbl{font-size:12.5px;opacity:.85;font-weight:600;margin-bottom:2px}
-.marq .m{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:3px 0;font-size:15px}
-.marq .m b{font-family:Outfit;font-size:19px;white-space:nowrap}
-.marq .m i{font-style:normal;opacity:.8;font-size:14px;white-space:nowrap}
-.gone{opacity:.5;text-decoration:line-through}
-.closed{padding:18px 16px;color:var(--mute);text-align:center;font-size:15px}
-.closed b{display:block;color:var(--ink);font-family:Outfit;font-size:19px;margin-bottom:2px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}
-.stats div{padding:12px 14px}.stats div+div{border-left:1px solid var(--line)}
-.stats .num{font-size:26px;font-weight:700;line-height:1.1}
-.stats small{display:block;color:var(--mute);font-size:13px}
-.seg{display:flex;background:var(--card);border-radius:14px;padding:4px;gap:4px;margin:14px 0;box-shadow:0 1px 0 var(--line)}
-.seg button{flex:1;border:0;background:none;border-radius:10px;min-height:44px;font-weight:600;color:var(--mute);cursor:pointer;font-size:15px;padding:0 4px}
-.lw{display:none}@media(min-width:560px){.lw{display:inline}.ln{display:none}}
-.seg button[aria-pressed=true]{background:var(--pc,var(--accent));color:#fff}
-.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.tools input[type=search]{flex:1 1 200px;font-size:16px;padding:10px 14px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
-.tog{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mute);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:44px;cursor:pointer;white-space:nowrap;text-decoration:none}
-.tog input{width:18px;height:18px;accent-color:var(--pc,var(--accent))}
-.row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;align-items:start}
+.card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 6px 20px -14px #1b1f4a66}
+.ch{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:12px 14px 6px}
+.ch h2{margin:0;font-size:16px;font-weight:700}
+.ch span{font-size:13px;color:var(--mute)}
+.sect{font-family:Outfit;font-size:15px;font-weight:700;color:var(--mute);margin:18px 2px 8px}
+.sect:first-child{margin-top:4px}
+.empty{padding:20px 16px;color:var(--mute);text-align:center;font-size:15px}
+.hint{padding:12px 14px;color:var(--mute);font-size:14px}
+.foot{color:var(--mute);font-size:12.5px;text-align:center;margin-top:24px;line-height:1.6}
+.note{font-size:13.5px;color:var(--mute);padding:10px 14px;border-top:1px solid var(--line)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pc);margin-right:5px;vertical-align:1px}
+.good{color:var(--short);font-weight:600}.llc{color:var(--accent-ink);font-weight:600}.bad{color:var(--long);font-weight:600}
+.tag{font-size:12.5px;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
+.tag.good{background:light-dark(#dcf5f2,#123b38)}.tag.bad{background:light-dark(#ffe3df,#4a1d1a)}
+
+/* rows */
+.row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line);min-height:58px}
 .row:first-child{border-top:0}
 .row .nm{flex:1;font-weight:600;line-height:1.3}
-.row .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;font-weight:500}
-.row .side{flex:none;text-align:right;font-size:14px;color:var(--mute);white-space:nowrap}
-.row .side b{display:block;color:var(--ink);font-family:Outfit;font-size:18px}
-.tag{font-size:12.5px;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
-.tag.ll{background:light-dark(#e8e4ff,#2c2766);color:light-dark(#4a3bc4,#c4bbff)}
-.tag.down{background:light-dark(#ffe3df,#4a1d1a);color:var(--long)}
-.tag.good{background:light-dark(#dcf5f2,#123b38);color:var(--short)}
-.tag.park{color:#fff;background:var(--pc)}
-.wait{flex:none;width:62px;text-align:center;border-radius:12px;padding:6px 0 4px;color:#fff;font-family:Outfit;line-height:1}
-.wait .num{font-size:26px;font-weight:800;display:block}
-.wait small{font-size:11px;opacity:.9}
+.sub2{display:block;font-size:13.5px;color:var(--mute);font-weight:500;margin-top:2px;line-height:1.4}
+.row .side{flex:none;text-align:right;font-size:13px;color:var(--mute);white-space:nowrap}
+.row .side b{display:block;color:var(--ink);font-family:Outfit;font-size:18px;line-height:1.2}
+.wait{flex:none;width:54px;text-align:center;border-radius:12px;padding:5px 0 4px;color:#fff;font-family:Outfit;line-height:1}
+.wait .num{font-size:23px;font-weight:800;display:block}
+.wait small{font-size:10.5px;opacity:.92}
 .w-s{background:var(--short)}.w-m{background:var(--mid)}.w-l{background:var(--long)}
-.w-x{background:light-dark(#d9d8ea,#2a2e57);color:var(--mute)}
-.w-x .num{font-size:15px;padding:5px 0 3px}
-.star{flex:none;border:0;background:none;width:36px;height:44px;margin:-6px -4px -6px -8px;cursor:pointer;color:light-dark(#c7c6dc,#3d4170);font-size:22px;line-height:1}
+.w-x{background:var(--soft);color:var(--mute)}
+.w-x .num{font-size:14px;padding:5px 0 3px}
+.star{flex:none;border:0;background:none;width:40px;height:44px;margin:-6px -8px -6px -10px;cursor:pointer;color:light-dark(#c7c6dc,#3d4170);font-size:21px;line-height:1}
 .star[aria-pressed=true]{color:#f2b631}
+details.more summary{list-style:none;cursor:pointer;padding:12px 14px;color:var(--mute);font-size:14px;font-weight:600;border-top:1px solid var(--line)}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"+ ";}
+details.more[open] summary::before{content:"– "}
+
+/* home: weather */
+.wx{padding:12px 14px 10px}
+.wxtop{display:flex;align-items:center;gap:10px}
+.wxtop svg{width:34px;height:34px;color:var(--mid);flex:none}
+.wxtop .num{font-size:32px;font-weight:700;line-height:1}
+.wxtop .txt{font-size:13.5px;color:var(--mute);line-height:1.35}.wxtop .txt b{color:var(--ink);font-weight:600;font-size:15px}
+.wxalert{font-size:14px;font-weight:600;color:var(--long);margin-top:6px}
+.hours{display:flex;gap:2px;overflow-x:auto;margin-top:8px;scrollbar-width:none}
+.hours::-webkit-scrollbar{display:none}
+.hr{flex:1 0 44px;text-align:center;font-size:12px;color:var(--mute)}
+.hr svg{width:20px;height:20px;display:block;margin:2px auto;color:var(--ink)}
+.hr b{display:block;color:var(--ink);font-family:Outfit;font-size:14.5px}
+.hr .p{color:var(--short);font-weight:600}.hr .p.hi{color:var(--long)}
+
+/* home: event strip */
+.evstrip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:12px 0}
+.evstrip::-webkit-scrollbar{display:none}
+.evstrip button{flex:none;border:0;cursor:pointer;background:var(--card);box-shadow:0 1px 0 var(--line);border-radius:14px;padding:9px 13px;text-align:left;font-size:13.5px;max-width:270px}
+.evstrip button b{display:block;font-family:Outfit;font-size:15px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evstrip button span{color:var(--mute)}
+
+/* home: park tiles */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(min-width:900px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.tile{border:0;text-align:left;cursor:pointer;background:var(--pc);color:#fff;border-radius:16px;padding:12px 13px 11px;display:flex;flex-direction:column;gap:2px;min-height:128px;position:relative;overflow:hidden;box-shadow:0 6px 16px -10px var(--pc)}
+.tile::after{content:"";position:absolute;right:-30px;top:-40px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,#ffffff30,#fff0 70%)}
+.tile h3{margin:0;font-size:17px;line-height:1.15;font-weight:700}
+.tile .st{font-size:13.5px;font-weight:600;opacity:.95}
+.tile .sm{font-size:13px;opacity:.85;line-height:1.35}
+.tile .big{margin-top:auto;display:flex;align-items:baseline;gap:6px;font-size:13px;opacity:.95}
+.tile .big b{font-family:Outfit;font-size:24px;line-height:1}
+.tile.closed{filter:saturate(.55)}
+
+/* home: tonight */
+.tl{display:grid;grid-template-columns:3.9em minmax(0,1fr);gap:0 10px;padding:8px 14px;border-top:1px solid var(--line);align-items:baseline}
+.tl:first-of-type{border-top:0}
+.tl b{font-family:Outfit;font-size:16px;white-space:nowrap}
+.tl span{font-weight:600;line-height:1.3}
+.tl small{display:block;color:var(--mute);font-weight:500;font-size:13px}
+
+/* park page */
+.hero{background:var(--pc);color:#fff;padding:14px 16px;position:relative;overflow:hidden;border-radius:18px}
+.hero::after{content:"";position:absolute;right:-40px;top:-60px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,#ffffff38,#fff0 70%);pointer-events:none}
+.hero .hl{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hero h2{margin:0;font-size:24px;line-height:1.1;font-weight:700}
+.hero .wxm{position:relative;z-index:1;font-size:13px;font-weight:600;background:#00000029;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.hero .hrs{font-size:16px;font-weight:600;margin-top:4px}
+.hero .sub{font-size:13.5px;opacity:.9;line-height:1.4}
+.evchip{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;background:#ffffff2e;border-radius:999px;padding:2px 10px}
+.marq{margin-top:10px;background:#00000029;border-radius:12px;padding:7px 12px}
+.marq .m{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:2px 0;font-size:14.5px}
+.marq .m b{font-family:Outfit;font-size:17px;white-space:nowrap}
+.marq .m i{font-style:normal;opacity:.85;font-size:13.5px}
+.gone{opacity:.5;text-decoration:line-through}
+.seg{display:flex;background:var(--card);border-radius:14px;padding:4px;gap:4px;margin:12px 0;box-shadow:0 1px 0 var(--line)}
+.seg button{flex:1;border:0;background:none;border-radius:10px;min-height:42px;font-weight:600;color:var(--mute);cursor:pointer;font-size:15px;padding:0 4px;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--pc,var(--accent));color:#fff}
+.lw{display:none}@media(min-width:560px){.lw{display:inline}.ln{display:none}}
+.tools{display:flex;gap:8px;margin-bottom:10px}
+.tools input[type=search]{flex:1;font-size:16px;padding:10px 14px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.tog{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mute);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:44px;cursor:pointer;white-space:nowrap;font-weight:600}
+.tog input{width:18px;height:18px;accent-color:var(--pc,var(--accent))}
+.closedmsg{padding:18px 16px;color:var(--mute);text-align:center;font-size:15px}
+.closedmsg b{display:block;color:var(--ink);font-family:Outfit;font-size:18px;margin-bottom:2px}
 .times{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
-.t{font-family:Outfit;font-weight:600;font-size:14px;padding:3px 9px;border-radius:8px;background:var(--soft);white-space:nowrap}
+.t{font-family:Outfit;font-weight:600;font-size:14px;padding:2px 9px;border-radius:8px;background:var(--soft);white-space:nowrap}
 .t.past{opacity:.38;text-decoration:line-through}
 .t.next{background:var(--pc,var(--accent));color:#fff}
-.sect{font-family:Outfit;font-size:15px;font-weight:700;color:var(--mute);margin:18px 2px 8px}
-.sect:first-child{margin-top:0}
-.note{font-size:13.5px;color:var(--mute);padding:10px 14px;border-top:1px solid var(--line)}
 .hrsT{width:100%;border-collapse:collapse;font-size:15px}
-.hrsT td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top}
+.hrsT td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
 .hrsT tr:first-child td{border-top:0}
-.hrsT td:first-child{font-weight:600;width:38%}
+.hrsT td:first-child{font-weight:600;width:36%}
 .hrsT .x{display:block;color:var(--mute);font-size:13.5px}
 .today td:first-child{color:var(--pc,var(--accent))}
-.empty{padding:22px 16px;color:var(--mute);text-align:center}
-.foot{color:var(--mute);font-size:13px;text-align:center;margin-top:26px}
-.click{cursor:pointer}
-/* weather */
-.wxcard{padding:14px 16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:center}
-.wxnow{display:flex;align-items:center;gap:10px}
-.wxnow svg{width:44px;height:44px;color:var(--mid)}
-.wxnow .num{font-size:40px;font-weight:700;line-height:1}
-.wxtxt{font-size:14px;color:var(--mute)}.wxtxt b{color:var(--ink);font-weight:600;display:block;font-size:15px}
-.hours{grid-column:1/-1;display:flex;gap:4px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
-.hours::-webkit-scrollbar{display:none}
-.hr{flex:1 0 46px;text-align:center;font-size:12.5px;color:var(--mute);border-radius:10px;padding:6px 2px}
-.hr svg{width:22px;height:22px;display:block;margin:2px auto;color:var(--ink)}
-.hr b{display:block;color:var(--ink);font-family:Outfit;font-size:15px}
-.hr .p{color:var(--short);font-weight:600}.hr .p.hi{color:var(--long)}
-.wxalert{grid-column:1/-1;font-size:14px;font-weight:600;color:var(--long);margin-top:4px}
+
 /* events */
 .evrow{padding:12px 14px;border-top:1px solid var(--line)}
 .evrow:first-child{border-top:0}
-.evrow h3{margin:0;font-size:17px;line-height:1.25}
-.evrow .when{font-size:14px;color:var(--mute);margin-top:2px}
-.evrow p{margin:6px 0 0;font-size:14.5px}
-.evrow .times{margin-top:8px}
+.evrow h3{margin:0;font-size:16.5px;line-height:1.25}
+.evrow .when{font-size:13.5px;color:var(--mute);margin-top:2px}
+.evrow p{margin:5px 0 0;font-size:14.5px}
 .pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px;background:var(--soft);color:var(--mute);white-space:nowrap}
 .pill.tix{background:light-dark(#fff0d6,#3a2e0c);color:light-dark(#8a5a00,#ffd98a)}
-.pill.now{background:light-dark(#dcf5f2,#123b38);color:var(--short)}
-.evstrip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
-.evstrip::-webkit-scrollbar{display:none}
-.evstrip button{flex:none;border:0;cursor:pointer;background:var(--card);box-shadow:0 1px 0 var(--line);border-radius:14px;padding:10px 14px;text-align:left;font-size:14px;max-width:290px}
-.evstrip button b{display:block;font-family:Outfit;font-size:15.5px;line-height:1.2}
-.evstrip button span{color:var(--mute)}
+
 /* resorts */
 details.res{border-top:1px solid var(--line)}
 details.res:first-child{border-top:0}
-details.res summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;gap:10px;min-height:56px}
+details.res summary{list-style:none;cursor:pointer;padding:11px 14px;display:flex;align-items:center;gap:10px;min-height:56px}
 details.res summary::-webkit-details-marker{display:none}
 details.res summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(45deg);margin:-4px 4px 0 auto;flex:none;transition:transform .15s}
 details.res[open] summary::after{transform:rotate(225deg);margin-top:4px}
@@ -149,16 +189,9 @@ details.res summary small{display:block;color:var(--mute);font-weight:500;font-s
 .dine{padding:0 14px 12px}
 .dine h4{margin:8px 0 2px;font-size:13px;color:var(--mute);font-weight:600}
 .dine ul{list-style:none;margin:0;padding:0}
-.dine li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line);font-size:15px}
+.dine li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line);font-size:15px}
 .dine li:first-child{border-top:0}
-.dine li a{font-size:13.5px;color:var(--accent);white-space:nowrap;text-decoration:none;font-weight:600;padding:6px 0}
-:root{--accent-ink:light-dark(#4a3bc4,#b9b0ff)}.dine li a{color:var(--accent-ink)}
-.tl{display:grid;grid-template-columns:4.1em minmax(0,1fr);gap:2px 12px;padding:10px 14px;border-top:1px solid var(--line);align-items:baseline}
-.tl:first-child{border-top:0}
-.tl b{font-family:Outfit;font-size:17px;white-space:nowrap}
-.tl span{font-weight:600;line-height:1.3}
-.tl .tag{grid-column:2;justify-self:start;margin-top:2px}
-.tl.past{opacity:.45}
+.dine li a{font-size:13.5px;color:var(--accent-ink);white-space:nowrap;text-decoration:none;font-weight:600;padding:8px 0}
 </style>
 </head>
 <body>
@@ -169,16 +202,20 @@ details.res summary small{display:block;color:var(--mute);font-weight:500;font-s
   <symbol id="i-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 14.5h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 14.5z" fill="currentColor" fill-opacity=".18"/><path d="M8 17.5l-1 3M12.5 17.5l-1 3M17 17.5l-1 3"/></symbol>
   <symbol id="i-storm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14.5h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 14.5z" fill="currentColor" fill-opacity=".18"/><path d="M12.5 15l-2 3.5h3l-2 3.5"/></symbol>
   <symbol id="i-fog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h16M6 13h12M4 17h16"/></symbol>
+  <symbol id="n-now" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="n-parks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 0 2-2h12a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H6a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2"/></symbol>
+  <symbol id="n-resorts" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M9.5 20v-5h5v5M9 11h.01M15 11h.01"/></symbol>
+  <symbol id="n-events" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13.2l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2-1.45-1.4 2-.3z"/></symbol>
 </svg>
 <header class="top">
   <div class="bar">
-    <h1>Bret and Nicole <span>WDW Park Board</span></h1>
-    <span class="stamp" id="stamp">Loading…</span>
+    <div class="ttl"><h1>Bret and Nicole WDW Park Board</h1><div class="stamp" id="stamp">Loading…</div></div>
     <button class="refresh" id="refresh" aria-label="Refresh now"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg></button>
   </div>
-  <nav class="chips" id="chips" aria-label="Sections"></nav>
+  <nav class="pswitch" id="pswitch" aria-label="Choose a park"></nav>
 </header>
 <main id="main"><div class="empty">Loading live park data…</div></main>
+<nav class="tabbar" aria-label="Sections"><div id="tabbar"></div></nav>
 <script>
 {
 const API='https://api.themeparks.wiki/v1';
@@ -186,14 +223,14 @@ const DEST='e957da41-3552-4cf6-b636-5babc5cbc4e5';
 const TZ='America/New_York';
 const WX_URL='https://api.open-meteo.com/v1/forecast?latitude=28.385&longitude=-81.564&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=sunset,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=2';
 const PARKS=[
- {k:'mk',id:'75ea578a-adc8-4116-a54d-dccb60765ef9',short:'Magic Kingdom',name:'Magic Kingdom',c:'#3f51d8',marquee:[{re:/^Happily Ever After/i,label:'Happily Ever After'},{re:/Dream the Night Away/i,label:'Dream the Night Away'}]},
- {k:'ep',id:'47f90d2c-e191-4239-a466-5892ef59a88b',short:'EPCOT',name:'EPCOT',c:'#8a3fc7',marquee:[{re:/^Luminous/i,label:'Luminous The Symphony of Us'}]},
- {k:'hs',id:'288747d1-8b4f-4a64-867e-ea7c9b27bad8',short:'Hollywood Studios',name:'Hollywood Studios',c:'#c2364f',marquee:[{re:/^Fantasmic/i,label:'Fantasmic!'}]},
- {k:'ak',id:'1c84a229-8862-4648-9c71-378ddd2c7693',short:'Animal Kingdom',name:'Animal Kingdom',c:'#1f7a5a',marquee:[{re:/^Tree of Life Awakenings/i,label:'Tree of Life Awakenings'}]},
- {k:'tl',id:'b070cbc5-feaa-4b87-a8c1-f94cca037a18',short:'Typhoon Lagoon',name:'Typhoon Lagoon',c:'#0f86b5',marquee:[]},
- {k:'bb',id:'ead53ea5-22e5-4095-9a83-8c29300d7c63',short:'Blizzard Beach',name:'Blizzard Beach',c:'#2b7fd0',marquee:[]}
+ {k:'mk',id:'75ea578a-adc8-4116-a54d-dccb60765ef9',ab:'MK',short:'Magic Kingdom',name:'Magic Kingdom',c:'#3f51d8',marquee:[{re:/^Happily Ever After/i,label:'Happily Ever After'},{re:/Dream the Night Away/i,label:'Dream the Night Away'}]},
+ {k:'ep',id:'47f90d2c-e191-4239-a466-5892ef59a88b',ab:'EPCOT',short:'EPCOT',name:'EPCOT',c:'#8a3fc7',marquee:[{re:/^Luminous/i,label:'Luminous'}]},
+ {k:'hs',id:'288747d1-8b4f-4a64-867e-ea7c9b27bad8',ab:'HS',short:'Hollywood Studios',name:'Hollywood Studios',c:'#c2364f',marquee:[{re:/^Fantasmic/i,label:'Fantasmic!'}]},
+ {k:'ak',id:'1c84a229-8862-4648-9c71-378ddd2c7693',ab:'AK',short:'Animal Kingdom',name:'Animal Kingdom',c:'#1f7a5a',marquee:[{re:/^Tree of Life Awakenings/i,label:'Tree of Life Awakenings'}]},
+ {k:'tl',id:'b070cbc5-feaa-4b87-a8c1-f94cca037a18',ab:'TL',short:'Typhoon Lagoon',name:'Typhoon Lagoon',c:'#0f86b5',marquee:[]},
+ {k:'bb',id:'ead53ea5-22e5-4095-9a83-8c29300d7c63',ab:'BB',short:'Blizzard Beach',name:'Blizzard Beach',c:'#2b7fd0',marquee:[]}
 ];
-const THEME=PARKS.slice(0,4);
+const THEME=PARKS.slice(0,4),WATER=PARKS.slice(4);
 
 /* ---- Special events: update these as Disney announces dates (last checked Nov 25, 2026) ---- */
 const EVENTS=[
@@ -215,14 +252,18 @@ const RES_GROUPS=[['mk','Monorail & Magic Kingdom boats'],['ep','EPCOT area · w
 
 const LIVE_MS=5*60e3, SCHED_MS=30*60e3, WX_MS=30*60e3;
 const store={get(k,d){try{const v=localStorage.getItem('pb_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('pb_'+k,JSON.stringify(v))}catch(e){}}};
-let view=store.get('view','now');if(view==='all')view='now';
-const st={view,tab:store.get('tab','rides'),q:'',rq:'',openOnly:store.get('openOnly',true),sort:store.get('sort','wait'),meets:store.get('meets',false),
+/* views: now | parks | resorts | events ; park: mk ep hs ak water */
+let view=store.get('view','now'),park=store.get('park','mk');
+if(['mk','ep','hs','ak','water'].includes(view)){park=view;view='parks'}
+if(!['now','parks','resorts','events'].includes(view))view='now';
+const st={view,park,tab:store.get('tab','rides'),q:'',rq:'',sort:store.get('sort','wait'),meets:store.get('meets',false),
   favs:new Set(store.get('favs',[])),openRes:new Set(),live:null,liveById:{},sched:{},wx:null,liveAt:0,schedAt:0,wxAt:0,err:''};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmtT=iso=>iso?new Date(iso).toLocaleTimeString('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'}).replace(':00','').replace(' AM','a').replace(' PM','p'):'';
 const ymd=d=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
 const today=()=>ymd(new Date());
+const tomorrowYmd=()=>ymd(new Date(Date.now()+864e5));
 const dayName=s=>new Date(s+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'});
 const shortDate=s=>new Date(s+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
 const daysBetween=(a,b)=>Math.round((new Date(b+'T12:00:00Z')-new Date(a+'T12:00:00Z'))/864e5);
@@ -230,6 +271,7 @@ const cleanName=n=>String(n).replace(/[®™]/g,'').replace(/^Disney's /,'').rep
 const wclass=w=>w==null?'w-x':w<=20?'w-s':w<=50?'w-m':'w-l';
 const parkOf=id=>PARKS.find(p=>p.id===id);
 const parkByK=k=>PARKS.find(p=>p.k===k);
+const shortEv=n=>n.replace('EPCOT International ','');
 
 async function getJSON(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.json()}
 function indexLive(){st.liveById={};for(const e of st.live||[])st.liveById[e.id]=e}
@@ -274,16 +316,18 @@ function eventName(id,date){
 const windows=id=>(st.sched[id]||[]).filter(x=>x.type==='OPERATING'||/early entry|extended evening/i.test(x.description||''));
 function isOpen(id){const now=Date.now();return windows(id).some(x=>now>=+new Date(x.openingTime)&&now<+new Date(x.closingTime))}
 function nextOpen(id){const now=Date.now();return (st.sched[id]||[]).filter(x=>x.type==='OPERATING'&&+new Date(x.openingTime)>now).sort((a,b)=>new Date(a.openingTime)-new Date(b.openingTime))[0]}
-function nextOpenTxt(id){const n=nextOpen(id);if(!n)return '';const d=n.date===today()?'today':n.date===ymd(new Date(Date.now()+864e5))?'tomorrow':dayName(n.date);return `Opens ${d} at ${fmtT(n.openingTime)}`}
+function nextOpenTxt(id,short=false){const n=nextOpen(id);if(!n)return '';const d=n.date===today()?'today':n.date===tomorrowYmd()?'tomorrow':dayName(n.date);return short?`Opens ${fmtT(n.openingTime)}${n.date===today()?'':' '+d}`:`Opens ${d} at ${fmtT(n.openingTime)}`}
 const dur=ms=>{const m=Math.round(ms/60e3),h=Math.floor(m/60);return h?`${h}h ${m%60}m`:`${m}m`};
+function openEnd(id){const now=Date.now();return Math.max(...windows(id).filter(x=>now>=+new Date(x.openingTime)&&now<+new Date(x.closingTime)).map(x=>+new Date(x.closingTime)))}
 function openStatus(id){
   const {op}=hoursLine(id);const now=Date.now();
-  if(isOpen(id)){const end=Math.max(...windows(id).filter(x=>now>=+new Date(x.openingTime)&&now<+new Date(x.closingTime)).map(x=>+new Date(x.closingTime)));return `Open · closes in ${dur(end-now)}`}
+  if(isOpen(id))return `Open · closes in ${dur(openEnd(id)-now)}`;
   if(op&&now<+new Date(op.openingTime))return `Opens in ${dur(+new Date(op.openingTime)-now)}`;
   return 'Closed'+(nextOpenTxt(id)?' · '+nextOpenTxt(id):'');
 }
 function closeTime(id){const op=hoursLine(id).op;return op?+new Date(op.closingTime):0}
 const wait=e=>e.queue?.STANDBY?.waitTime??null;
+const rides=id=>byPark(id).filter(e=>e.entityType==='ATTRACTION');
 
 /* ---------- ride timing from Disney's hourly forecast ---------- */
 function fcNow(e){const now=Date.now();return (e.forecast||[]).find(x=>{const t=+new Date(x.time);return now>=t&&now<t+36e5})}
@@ -298,21 +342,33 @@ function bestLater(e){
   if(!fut.length)return null;const best=fut.reduce((a,b)=>b.waitTime<a.waitTime?b:a);
   return best.waitTime<=w-15?best:null;
 }
-function timingTags(e){
-  const b=belowUsual(e),l=bestLater(e),out=[];
-  if(b)out.push(`<span class="tag good">Good time · usually ~${b.exp}</span>`);
-  else if(l)out.push(`<span class="tag">Better later · ~${l.waitTime} at ${fmtT(l.time)}</span>`);
-  return out.join('');
+/* one muted line of facts under a ride name; highlights only what matters */
+function rideFacts(e,{park=false}={}){
+  const q=e.queue||{},out=[];const p=parkOf(e.parkId);
+  if(park&&p)out.push(`<span><span class="dot" style="--pc:${p.c}"></span>${p.ab}</span>`);
+  if(e.status==='DOWN')out.push('<span class="bad">Temporarily down</span>');
+  else if(e.status==='REFURBISHMENT')out.push('Refurbishment');
+  else if(e.status==='CLOSED')out.push('Closed');
+  if(e.status==='OPERATING'){
+    const b=belowUsual(e),l=bestLater(e);
+    if(b)out.push(`<span class="good">Good time · usually ~${b.exp}</span>`);
+    else if(l)out.push(`Better ~${l.waitTime} at ${fmtT(l.time)}`);
+    const rt=q.RETURN_TIME,pr=q.PAID_RETURN_TIME,sr=q.SINGLE_RIDER,bg=q.BOARDING_GROUP;
+    if(rt){if(rt.state==='AVAILABLE'&&rt.returnStart)out.push(`<span class="llc">LL ${fmtT(rt.returnStart)}</span>`);else if(rt.state==='FINISHED')out.push('LL gone');}
+    if(pr){if(pr.state==='AVAILABLE'&&pr.returnStart)out.push(`<span class="llc">Single Pass ${fmtT(pr.returnStart)}${pr.price?.formatted?' · '+pr.price.formatted.replace('.00',''):''}</span>`);else if(pr.state==='FINISHED')out.push('Single Pass gone');}
+    if(sr)out.push(sr.waitTime!=null?`Single rider ${sr.waitTime}m`:'Single rider');
+    if(bg)out.push(`<span class="llc">Boarding group${bg.currentGroupStart?` ${bg.currentGroupStart}–${bg.currentGroupEnd}`:''}</span>`);
+  }
+  return out.length?`<span class="sub2">${out.join(' · ')}</span>`:'';
 }
-function llTags(e){
-  const q=e.queue||{},out=[];
-  const rt=q.RETURN_TIME,pr=q.PAID_RETURN_TIME,sr=q.SINGLE_RIDER,bg=q.BOARDING_GROUP;
-  const rtTxt=(x,lbl)=>x.state==='AVAILABLE'&&x.returnStart?`${lbl} ${fmtT(x.returnStart)}`:x.state==='FINISHED'?`${lbl} gone`:x.state==='TEMP_FULL'?`${lbl} full now`:'';
-  if(rt){const t=rtTxt(rt,'LL');if(t)out.push(`<span class="tag ll">${t}</span>`)}
-  if(pr){const t=rtTxt(pr,'Single Pass');const p=pr.price?.formatted;if(t)out.push(`<span class="tag ll">${t}${p&&pr.state==='AVAILABLE'?' · '+p:''}</span>`)}
-  if(sr&&sr.waitTime!=null)out.push(`<span class="tag">Single rider ${sr.waitTime}m</span>`);else if(sr&&e.status==='OPERATING')out.push(`<span class="tag">Single rider</span>`);
-  if(bg)out.push(`<span class="tag ll">Boarding group${bg.currentGroupStart?` ${bg.currentGroupStart}–${bg.currentGroupEnd}`:''}</span>`);
-  return out.join('');
+function waitBox(e){const w=wait(e),op=e.status==='OPERATING';return op&&w!=null?`<div class="wait ${wclass(w)}"><span class="num">${w}</span><small>min</small></div>`:`<div class="wait w-x"><span class="num">${op?'Open':e.status==='DOWN'?'Down':'—'}</span></div>`}
+function rideRow(e,opt={}){
+  const fav=st.favs.has(e.id);
+  return `<div class="row"><button class="star" data-fav="${e.id}" aria-pressed="${fav}" aria-label="${fav?'Remove':'Add'} ${esc(cleanName(e.name))} ${fav?'from':'to'} favorites">★</button>
+   <div class="nm">${esc(cleanName(e.name))}${rideFacts(e,opt)}</div>${waitBox(e)}</div>`;
+}
+function goodNow(parks){
+  return parks.filter(p=>isOpen(p.id)).flatMap(p=>rides(p.id).filter(e=>belowUsual(e))).sort((a,b)=>belowUsual(b).save-belowUsual(a).save);
 }
 
 /* ---------- shows ---------- */
@@ -326,21 +382,23 @@ function marquee(p){
     return {label:m.label,ts};
   });
 }
+const partyTonight=p=>hoursLine(p.id).extras.some(x=>x.ticketed);
 function shows(id,{meets=st.meets}={}){
   const p=parkOf(id);
   return byPark(id).filter(e=>e.entityType==='SHOW'&&(e.showtimes||[]).length&&(meets||!isMeet(e.name))&&!marqueeDef(p,e));
 }
 function marqueeBlock(p){
   const ms=marquee(p);if(!ms.length)return '';const now=Date.now();
-  return `<div class="marq"><div class="lbl">Tonight’s nighttime spectacular${ms.length>1?'s':''}</div>${ms.map(m=>`<div class="m"><span>${esc(m.label)}</span>${m.ts.length?`<b>${m.ts.map(t=>`<span class="${+new Date(t)<now-20*60e3?'gone':''}">${fmtT(t)}</span>`).join(', ')}</b>`:`<i>${hoursLine(p.id).extras.some(x=>x.ticketed)?'Not tonight · party night':'Not scheduled tonight'}</i>`}</div>`).join('')}</div>`;
+  if(ms.every(m=>!m.ts.length)){const party=hoursLine(p.id).extras.find(x=>x.ticketed);return `<div class="marq"><div class="m"><i>${party?`No ${ms.length>1?'nighttime shows':esc(ms[0].label)} tonight · party night`:`No ${ms.length>1?'nighttime shows':esc(ms[0].label)} tonight`}</i></div></div>`}
+  return `<div class="marq">${ms.map(m=>`<div class="m"><span>${esc(m.label)}</span>${m.ts.length?`<b>${m.ts.map(t=>`<span class="${+new Date(t)<now-20*60e3?'gone':''}">${fmtT(t)}</span>`).join(', ')}</b>`:`<i>${partyTonight(p)?'Not tonight · party night':'Not scheduled tonight'}</i>`}</div>`).join('')}</div>`;
 }
 const parklessShow=re=>(st.live||[]).find(e=>!e.parkId&&e.entityType==='SHOW'&&re.test(e.name));
 function tonightItems(){
   const out=[];
   for(const p of THEME)for(const m of marquee(p))for(const t of m.ts)out.push({t,name:m.label,where:p.short,c:p.c});
   const ewp=parklessShow(/Electrical Water Pageant/i),dtl=parklessShow(/Drawn to Life/i);
-  for(const [e,label,where] of [[ewp,'Electrical Water Pageant','Bay Lake & Seven Seas Lagoon'],[dtl,'Drawn to Life (Cirque du Soleil)','Disney Springs']])
-    for(const s of e?.showtimes||[])if(ymd(new Date(s.startTime))===today())out.push({t:s.startTime,name:label,where,c:'#6a6f9c'});
+  for(const [e,label,where] of [[ewp,'Electrical Water Pageant','Bay Lake & Seven Seas Lagoon'],[dtl,'Drawn to Life · Cirque du Soleil','Disney Springs']])
+    for(const s of e?.showtimes||[])if(ymd(new Date(s.startTime))===today())out.push({t:s.startTime,name:label,where,c:'#7a7fae'});
   return out.sort((a,b)=>new Date(a.t)-new Date(b.t));
 }
 
@@ -364,128 +422,132 @@ function evWhen(ev){
 /* ---------- weather ---------- */
 function wxIcon(code,isNight){const c=+code;const id=c===0||c===1?(isNight?'i-part':'i-sun'):c===2?'i-part':c===3?'i-cloud':c===45||c===48?'i-fog':c>=95?'i-storm':(c>=51&&c<=67)||(c>=80&&c<=82)?'i-rain':'i-cloud';return `<svg aria-hidden="true"><use href="#${id}"/></svg>`}
 const wxWord=c=>{c=+c;return c===0?'Clear':c===1?'Mostly clear':c===2?'Partly cloudy':c===3?'Cloudy':c===45||c===48?'Fog':c>=95?'Thunderstorms':c>=80?'Showers':c>=61?'Rain':c>=51?'Drizzle':'Cloudy'};
+const sunsetMs=()=>{const s=st.wx?.daily?.sunset?.[0];return s?+new Date(s+':00-05:00'):0};
 function wxHours(n=10){
   const w=st.wx;if(!w?.hourly)return [];const now=Date.now();
   const out=[];w.hourly.time.forEach((t,i)=>{const ms=+new Date(t+':00-05:00');if(ms>now-36e5&&out.length<n)out.push({t:ms,temp:Math.round(w.hourly.temperature_2m[i]),p:w.hourly.precipitation_probability[i]??0,code:w.hourly.weather_code[i]})});
   return out;
 }
-function wxMini(){const w=st.wx;if(!w?.current)return '';const p=Math.max(0,...wxHours(3).map(h=>h.p));return `<span class="wx">${Math.round(w.current.temperature_2m)}°${p>=30?` · ${p}% rain`:''}</span>`}
+function wxMini(){const w=st.wx;if(!w?.current)return '';const p=Math.max(0,...wxHours(3).map(h=>h.p));return `<span class="wxm">${Math.round(w.current.temperature_2m)}°${p>=30?` · ${p}% rain`:''}</span>`}
 function weatherCard(){
   const w=st.wx;if(!w?.current)return '';
-  const hrs=wxHours(10);const sunset=w.daily?.sunset?.[0];const night=sunset&&Date.now()>+new Date(sunset+':00-05:00');
+  const hrs=wxHours(10);const ss=sunsetMs();const night=ss&&Date.now()>ss;
   const wet=hrs.find(h=>h.p>=50);
   const hourLbl=ms=>new Date(ms).toLocaleTimeString('en-US',{timeZone:TZ,hour:'numeric'}).replace(' AM','a').replace(' PM','p');
-  return `<section class="card"><div class="wxcard">
-    <div class="wxnow">${wxIcon(w.current.weather_code,night)}<span class="num">${Math.round(w.current.temperature_2m)}°</span></div>
-    <div class="wxtxt"><b>${wxWord(w.current.weather_code)} at the parks</b>High ${Math.round(w.daily.temperature_2m_max[0])}° · low ${Math.round(w.daily.temperature_2m_min[0])}°${sunset?` · sunset ${fmtT(sunset+':00-05:00')}`:''}</div>
+  return `<section class="card wx">
+    <div class="wxtop">${wxIcon(w.current.weather_code,night)}<span class="num">${Math.round(w.current.temperature_2m)}°</span>
+      <div class="txt"><b>${wxWord(w.current.weather_code)}</b><br>High ${Math.round(w.daily.temperature_2m_max[0])}° · low ${Math.round(w.daily.temperature_2m_min[0])}°${ss?` · sunset ${fmtT(new Date(ss).toISOString())}`:''}</div></div>
     ${wet?`<div class="wxalert">Rain likely ${wet===hrs[0]?'now':'around '+hourLbl(wet.t)} (${wet.p}%)</div>`:''}
-    <div class="hours">${hrs.map((h,i)=>`<div class="hr">${i===0?'Now':hourLbl(h.t)}${wxIcon(h.code,sunset&&h.t>+new Date(sunset+':00-05:00'))}<b>${h.temp}°</b><span class="p${h.p>=50?' hi':''}">${h.p}%</span></div>`).join('')}</div>
-  </div></section>`;
+    <div class="hours">${hrs.map((h,i)=>`<div class="hr">${i===0?'Now':hourLbl(h.t)}${wxIcon(h.code,ss&&h.t>ss)}<b>${h.temp}°</b><span class="p${h.p>=50?' hi':''}">${h.p}%</span></div>`).join('')}</div>
+  </section>`;
 }
 
-/* ---------- rendering ---------- */
-function chips(){
-  const items=[{k:'now',short:'Right now'},...THEME,{k:'resorts',short:'Resorts'},{k:'events',short:'Events'},{k:'water',short:'Water parks'}];
-  $('#chips').innerHTML=items.map(p=>`<button class="chip" data-v="${p.k}" aria-pressed="${st.view===p.k}">${p.short}</button>`).join('');
+/* ---------- chrome ---------- */
+const TABS=[['now','Right now','n-now'],['parks','Parks','n-parks'],['resorts','Resorts','n-resorts'],['events','Events','n-events']];
+function chrome(){
+  $('#tabbar').innerHTML=TABS.map(([k,l,i])=>`<button data-v="${k}" ${st.view===k?'aria-current="page"':''}><svg aria-hidden="true"><use href="#${i}"/></svg>${l}</button>`).join('');
+  const sw=[...THEME,{k:'water',ab:'Water',c:'#0f86b5'}];
+  $('#pswitch').innerHTML=st.view==='parks'?sw.map(p=>`<button data-park="${p.k}" style="--pc:${p.c}" aria-pressed="${st.park===p.k}" aria-label="${p.short||'Water parks'}">${p.ab}</button>`).join(''):'';
 }
 function stamp(){
   if(!st.liveAt){$('#stamp').textContent=st.err?'Offline':'Loading…';return}
   const m=Math.round((Date.now()-st.liveAt)/60e3);
-  $('#stamp').textContent=m<1?'Updated just now':`Updated ${m} min ago`;
+  $('#stamp').textContent=(st.err?'Offline · ':'')+(m<1?'Live · updated just now':`Updated ${m} min ago`);
 }
-function hero(p,{link=false}={}){
-  const h=hoursLine(p.id);const ev=activeEvents(p.k).filter(e=>e.park===p.k);
-  return `<div class="hero${link?' click':''}" style="--pc:${p.c}" ${link?`data-go="${p.k}"`:''}>
-    ${wxMini()}
-    <h2>${p.name}</h2>
-    <div class="hrs">${h.main}</div>
-    <div class="sub">${openStatus(p.id)}${h.extras.map(x=>` · ${esc(x.label)} ${x.txt}`).join('')}</div>
-    ${ev.map(e=>`<span class="evchip">${esc(e.name.replace('EPCOT International ',''))} · through ${shortDate(e.end)}</span>`).join(' ')}
-    ${marqueeBlock(p)}
-  </div>`;
-}
-const closedMsg=p=>`<div class="closed"><b>Park closed</b>Ride times will appear when ${p.name} opens.${nextOpenTxt(p.id)?' '+nextOpenTxt(p.id)+'.':''}</div>`;
-function waitBox(e){const w=wait(e),op=e.status==='OPERATING';return op&&w!=null?`<div class="wait ${wclass(w)}"><span class="num">${w}</span><small>min</small></div>`:`<div class="wait w-x"><span class="num">${op?'Open':e.status==='DOWN'?'Down':'—'}</span></div>`}
-function rideRow(e,{park=false}={}){
-  const op=e.status==='OPERATING';const fav=st.favs.has(e.id);const p=parkOf(e.parkId);
-  const statusTag=e.status==='DOWN'?'<span class="tag down">Temporarily down</span>':e.status==='REFURBISHMENT'?'<span class="tag down">Refurbishment</span>':e.status==='CLOSED'?'<span class="tag">Closed</span>':'';
-  return `<div class="row"><button class="star" data-fav="${e.id}" aria-pressed="${fav}" aria-label="Favorite ${esc(e.name)}">★</button>
-   <div class="nm">${esc(cleanName(e.name))}<div class="meta">${park&&p?`<span class="tag park" style="--pc:${p.c}">${p.short}</span>`:''}${statusTag}${op?timingTags(e)+llTags(e):''}</div></div>${waitBox(e)}</div>`;
-}
-function goodNow(parks){
-  return parks.filter(p=>isOpen(p.id)).flatMap(p=>byPark(p.id).filter(e=>e.entityType==='ATTRACTION'&&belowUsual(e))).sort((a,b)=>belowUsual(b).save-belowUsual(a).save);
+
+/* ---------- Right now ---------- */
+function tile(p){
+  const h=hoursLine(p.id);const open=isOpen(p.id);const now=Date.now();
+  let status,mid='',big='';
+  if(open){
+    const end=openEnd(p.id);status=`Open until ${fmtT(new Date(end).toISOString())}`;
+    const op=rides(p.id).filter(e=>e.status==='OPERATING');const ws=op.map(wait).filter(w=>w!=null);
+    const avg=ws.length?Math.round(ws.reduce((a,b)=>a+b,0)/ws.length):null;
+    big=avg!=null?`<b>${avg}</b>min avg wait`:`${op.length} rides open`;
+  }else if(h.op&&now<+new Date(h.op.openingTime)){status=`Opens ${fmtT(h.op.openingTime)}`;big=`Today ${h.main}`}
+  else{const n=nextOpen(p.id);status='Closed for the night';if(n){const nh=hoursLine(p.id,n.date);big=`${n.date===tomorrowYmd()?'Tomorrow':dayName(n.date).split(',')[0]} ${nh.main}`}}
+  const nxt=marquee(p).flatMap(m=>m.ts.map(t=>({t,l:m.label}))).filter(x=>+new Date(x.t)>now-10*60e3).sort((a,b)=>new Date(a.t)-new Date(b.t))[0];
+  const party=h.extras.find(x=>x.ticketed);
+  if(nxt)mid=`${esc(nxt.l)} ${fmtT(nxt.t)}`;else if(party&&now<+new Date(h.op?.closingTime||0)+6*36e5)mid=`${esc(shortEv(party.label))} tonight`;
+  return `<button class="tile${open?'':' closed'}" data-park="${p.k}" style="--pc:${p.c}"><h3>${p.name}</h3><span class="st">${status}</span>${mid?`<span class="sm">${mid}</span>`:''}<span class="big">${big}</span></button>`;
 }
 function eventStrip(){
   const t=today();const items=[];
-  for(const e of EVENTS.filter(e=>e.start&&!e.ticket&&t>=e.start&&t<=e.end))items.push({b:e.name.replace('EPCOT International ','EPCOT '),s:`Through ${shortDate(e.end)}`});
-  for(const p of THEME)for(const x of hoursLine(p.id).extras.filter(x=>x.ticketed))items.push({b:x.label,s:`Tonight ${x.txt} · ${p.short}`});
+  for(const e of EVENTS.filter(e=>e.start&&!e.ticket&&t>=e.start&&t<=e.end))items.push({b:shortEv(e.name),s:`Through ${shortDate(e.end)}`});
+  for(const p of THEME)for(const x of hoursLine(p.id).extras.filter(x=>x.ticketed))items.push({b:x.label,s:`Tonight ${x.txt} · ${p.ab}`});
   const next=EVENTS.filter(e=>e.start&&e.start>t).sort((a,b)=>a.start<b.start?-1:1)[0];
-  if(next)items.push({b:next.name.replace('EPCOT International ','EPCOT '),s:evWhen(next).split(' · ')[1]});
+  if(next)items.push({b:shortEv(next.name),s:evWhen(next).split(' · ')[1]});
   return items.length?`<div class="evstrip">${items.map(i=>`<button data-v="events"><b>${esc(i.b)}</b><span>${esc(i.s)}</span></button>`).join('')}</div>`:'';
 }
 function tonightCard(){
-  const items=tonightItems();if(!items.length)return '';const now=Date.now();
-  return `<section class="card"><div class="sect" style="margin:12px 14px 4px">Tonight across Walt Disney World</div>${items.map(i=>`<div class="tl${+new Date(i.t)<now-20*60e3?' past':''}"><b>${fmtT(i.t)}</b><span>${esc(i.name)}</span><span class="tag park" style="--pc:${i.c}">${esc(i.where)}</span></div>`).join('')}</section>`;
+  const now=Date.now();const items=tonightItems().filter(i=>+new Date(i.t)>now-20*60e3);
+  if(!items.length)return '';
+  return `<section class="card"><div class="ch"><h2>Tonight</h2><span>Shows across the resort</span></div>${items.map(i=>`<div class="tl"><b>${fmtT(i.t)}</b><span>${esc(i.name)}<small><span class="dot" style="--pc:${i.c}"></span>${esc(i.where)}</small></span></div>`).join('')}</section>`;
 }
-function parkCards(list){
-  return `<div class="grid">${list.map(p=>{
-    if(!isOpen(p.id))return `<section class="card">${hero(p,{link:true})}${closedMsg(p)}<div class="row"><span class="nm"></span><button class="tog" data-go="${p.k}">${p.short} shows &amp; hours →</button></div></section>`;
-    const rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
-    const open=rides.filter(e=>e.status==='OPERATING');const ws=open.map(wait).filter(w=>w!=null);
-    const avg=ws.length?Math.round(ws.reduce((a,b)=>a+b,0)/ws.length):null;
-    const favs=rides.filter(e=>st.favs.has(e.id));
-    const top=(favs.length?favs:open.filter(e=>wait(e)!=null)).sort((a,b)=>(wait(b)??-1)-(wait(a)??-1)).slice(0,favs.length?8:4);
-    return `<section class="card">${hero(p,{link:true})}
-      <div class="stats"><div><span class="num">${open.length}</span><small>rides open</small></div>
-      <div><span class="num">${avg??'—'}</span><small>avg wait</small></div>
-      <div><span class="num">${ws.length?Math.max(...ws):'—'}</span><small>longest</small></div></div>
-      ${top.length?`<div>${top.map(e=>rideRow(e)).join('')}</div>`:`<div class="empty">No wait times posted right now.</div>`}
-      <div class="row"><span class="nm" style="font-weight:500;color:var(--mute);font-size:14px">${favs.length?'Your favorites':'Longest waits right now'}</span><button class="tog" data-go="${p.k}">All ${p.short} →</button></div>
-    </section>`}).join('')}</div>`;
+function favCard(){
+  const open=THEME.filter(p=>isOpen(p.id));
+  const favs=open.flatMap(p=>rides(p.id).filter(e=>st.favs.has(e.id))).sort((a,b)=>(wait(a)??999)-(wait(b)??999));
+  if(!open.length)return '';
+  return `<section class="card"><div class="ch"><h2>Your favorites</h2><span>${favs.length?'Shortest wait first':''}</span></div>${favs.length?favs.map(e=>rideRow(e,{park:true})).join(''):'<div class="hint">Tap ★ next to any ride and it will show up here with its live wait.</div>'}</section>`;
+}
+function goodCard(){
+  const good=goodNow(THEME).slice(0,5);if(!good.length)return '';
+  return `<section class="card"><div class="ch"><h2>Good time to ride</h2><span>Shorter than usual now</span></div>${good.map(e=>rideRow(e,{park:true})).join('')}</section>`;
 }
 function homeView(){
-  const good=goodNow(THEME).slice(0,6);
-  return `${eventStrip()}<div class="grid">${weatherCard()}${tonightCard()}
-    ${good.length?`<section class="card"><div class="sect" style="margin:12px 14px 4px">Good time to ride — shorter than usual right now</div>${good.map(e=>rideRow(e,{park:true})).join('')}</section>`:''}</div>
-    <div class="sect" style="margin-top:22px">Parks</div>${parkCards(THEME)}`;
+  return `${weatherCard()}${eventStrip()}<div class="tiles">${THEME.map(tile).join('')}</div>
+    <div class="grid" style="margin-top:14px">${favCard()}${goodCard()}${tonightCard()}</div>`;
 }
+
+/* ---------- Parks ---------- */
+function hero(p){
+  const h=hoursLine(p.id);const ev=activeEvents(p.k).filter(e=>e.park===p.k);
+  return `<div class="hero" style="--pc:${p.c}">
+    <div class="hl"><h2>${p.name}</h2>${wxMini()}</div>
+    <div class="hrs">${h.main}${h.op?` <span style="font-weight:500;opacity:.9">· ${openStatus(p.id)}</span>`:''}</div>
+    ${h.extras.length||!h.op?`<div class="sub">${!h.op?openStatus(p.id)+(h.extras.length?' · ':''):''}${h.extras.map(x=>`${esc(x.label)} ${x.txt}`).join(' · ')}</div>`:''}
+    ${ev.map(e=>`<span class="evchip">${esc(shortEv(e.name))} · through ${shortDate(e.end)}</span>`).join(' ')}
+    ${marqueeBlock(p)}
+  </div>`;
+}
+const closedMsg=p=>`<div class="closedmsg"><b>Park closed</b>Ride times will appear when ${p.name} opens.${nextOpenTxt(p.id)?' '+nextOpenTxt(p.id)+'.':''}</div>`;
 function ridesView(p){
   if(!isOpen(p.id))return `<div class="card">${closedMsg(p)}</div>`;
-  let rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
-  if(st.openOnly)rides=rides.filter(e=>e.status==='OPERATING'||e.status==='DOWN');
-  if(st.q)rides=rides.filter(e=>e.name.toLowerCase().includes(st.q));
+  let all=rides(p.id);
+  if(st.q)all=all.filter(e=>e.name.toLowerCase().includes(st.q));
   const cmp=st.sort==='wait'?(a,b)=>(wait(b)??-1)-(wait(a)??-1)||a.name.localeCompare(b.name):(a,b)=>cleanName(a.name).localeCompare(cleanName(b.name));
-  const favs=rides.filter(e=>st.favs.has(e.id)).sort(cmp),rest=rides.filter(e=>!st.favs.has(e.id)).sort(cmp);
-  const good=st.q?[]:goodNow([p]);
-  return `<div class="tools"><input type="search" id="q" placeholder="Search rides" value="${esc(st.q)}" autocomplete="off">
-    <button class="tog" id="sort">Sort: ${st.sort==='wait'?'Longest wait':'A–Z'}</button>
-    <label class="tog"><input type="checkbox" id="openOnly" ${st.openOnly?'checked':''}> Open only</label></div>
+  const live=all.filter(e=>e.status==='OPERATING'||e.status==='DOWN');const closed=all.filter(e=>!live.includes(e)).sort((a,b)=>cleanName(a.name).localeCompare(cleanName(b.name)));
+  const favs=live.filter(e=>st.favs.has(e.id)).sort(cmp),rest=live.filter(e=>!st.favs.has(e.id)).sort(cmp);
+  const good=st.q?[]:goodNow([p]).filter(e=>!st.favs.has(e.id)).slice(0,4);
+  return `<div class="tools"><input type="search" id="q" placeholder="Search rides" value="${esc(st.q)}" autocomplete="off" aria-label="Search rides">
+    <button class="tog" id="sort" aria-label="Change sort order">${st.sort==='wait'?'Longest first':'A–Z'}</button></div>
+    ${favs.length?`<div class="sect">Your favorites</div><div class="card">${favs.map(e=>rideRow(e)).join('')}</div>`:''}
     ${good.length?`<div class="sect">Good time to ride</div><div class="card">${good.map(e=>rideRow(e)).join('')}</div>`:''}
-    ${favs.length?`<div class="sect">Favorites</div><div class="card">${favs.map(e=>rideRow(e)).join('')}</div>`:''}
     <div class="sect">${favs.length||good.length?'All rides':'Rides'}</div>
-    <div class="card">${rest.length?rest.map(e=>rideRow(e)).join(''):'<div class="empty">Nothing matches.</div>'}</div>`;
+    <div class="card">${rest.length?rest.map(e=>rideRow(e)).join(''):'<div class="empty">Nothing matches.</div>'}
+    ${closed.length?`<details class="more"><summary>Closed today (${closed.length})</summary>${closed.map(e=>rideRow(e)).join('')}</details>`:''}</div>`;
 }
 function llView(p){
-  const h=hoursLine(p.id);const pur=h.purchases;const t=today();
+  const h=hoursLine(p.id);const pur=h.purchases;
   const pkg=pur.filter(x=>x.type==='PACKAGE');const singles=pur.filter(x=>x.type==='ATTRACTION');
-  const rides=byPark(p.id).filter(e=>e.entityType==='ATTRACTION');
-  const findRide=nm=>{const n=cleanName(nm.replace(/^Lightning Lane for /i,'')).toLowerCase();return rides.find(e=>cleanName(e.name).toLowerCase()===n)||rides.find(e=>cleanName(e.name).toLowerCase().includes(n)||n.includes(cleanName(e.name).toLowerCase()))};
-  const tomorrow=hoursLine(p.id,ymd(new Date(Date.now()+864e5))).purchases.filter(x=>x.type==='PACKAGE');
-  const mp=rides.filter(e=>e.queue?.RETURN_TIME);
+  const rs=rides(p.id);
+  const findRide=nm=>{const n=cleanName(nm.replace(/^Lightning Lane for /i,'')).toLowerCase();return rs.find(e=>cleanName(e.name).toLowerCase()===n)||rs.find(e=>cleanName(e.name).toLowerCase().includes(n)||n.includes(cleanName(e.name).toLowerCase()))};
+  const tomorrow=hoursLine(p.id,tomorrowYmd()).purchases.filter(x=>x.type==='PACKAGE');
+  const mp=rs.filter(e=>e.queue?.RETURN_TIME);
   const avail=mp.filter(e=>e.queue.RETURN_TIME.state==='AVAILABLE'&&e.queue.RETURN_TIME.returnStart).sort((a,b)=>new Date(a.queue.RETURN_TIME.returnStart)-new Date(b.queue.RETURN_TIME.returnStart));
   const gone=mp.filter(e=>!avail.includes(e));
-  const price=x=>x.price?.formatted||'—';
-  return `<div class="sect">Lightning Lane Multi Pass</div><div class="card">
-    ${pkg.length?pkg.map(x=>`<div class="row"><div class="nm">Today<div class="meta">${x.available===false?'<span class="tag down">Sold out</span>':'<span class="tag good">Available</span>'}</div></div><div class="side"><b>${price(x)}</b>per person</div></div>`).join(''):'<div class="empty">No Multi Pass price posted for today.</div>'}
-    ${tomorrow.map(x=>`<div class="row"><div class="nm">Tomorrow<div class="meta">${x.available===false?'<span class="tag down">Sold out</span>':'<span class="tag">On sale</span>'}</div></div><div class="side"><b>${price(x)}</b>per person</div></div>`).join('')}
-  </div>
-  ${singles.length?`<div class="sect">Lightning Lane Single Pass</div><div class="card">${singles.map(x=>{const r=findRide(x.name);const pr=r?.queue?.PAID_RETURN_TIME;const ret=pr?.state==='AVAILABLE'&&pr.returnStart?`Next return ${fmtT(pr.returnStart)}`:'';
-    return `<div class="row"><div class="nm">${esc(cleanName(x.name.replace(/^Lightning Lane for /i,'')))}<div class="meta">${x.available===false||pr?.state==='FINISHED'?'<span class="tag down">Sold out</span>':`<span class="tag good">${ret||'Available'}</span>`}${r&&wait(r)!=null?`<span class="tag">Standby ${wait(r)} min</span>`:''}</div></div><div class="side"><b>${price(x)}</b>per person</div></div>`}).join('')}</div>`:''}
-  <div class="sect">Multi Pass return times right now</div><div class="card">
-    ${avail.length?avail.map(e=>`<div class="row"><div class="nm">${esc(cleanName(e.name))}<div class="meta">${wait(e)!=null?`<span class="tag">Standby ${wait(e)} min</span>`:''}</div></div><div class="side"><b>${fmtT(e.queue.RETURN_TIME.returnStart)}</b>next return</div></div>`).join(''):`<div class="empty">${isOpen(p.id)?'No return times available right now.':'Return times appear on the day, once Lightning Lane opens.'}</div>`}
+  const price=x=>(x.price?.formatted||'—').replace('.00','');
+  const mpRow=(lbl,x,soldTxt)=>`<div class="row"><div class="nm">${lbl}<span class="sub2">${x.available===false?'<span class="bad">Sold out</span>':soldTxt}</span></div><div class="side"><b>${price(x)}</b>per person</div></div>`;
+  return `<div class="sect">Multi Pass</div><div class="card">
+    ${pkg.length?pkg.map(x=>mpRow('Today',x,'<span class="good">Available</span>')).join(''):'<div class="empty">No Multi Pass price posted for today.</div>'}
+    ${tomorrow.map(x=>mpRow('Tomorrow',x,'On sale')).join('')}</div>
+  ${singles.length?`<div class="sect">Single Pass</div><div class="card">${singles.map(x=>{const r=findRide(x.name);const pr=r?.queue?.PAID_RETURN_TIME;const sold=x.available===false||pr?.state==='FINISHED';const ret=pr?.state==='AVAILABLE'&&pr.returnStart?`Next return ${fmtT(pr.returnStart)}`:'Available';
+    return `<div class="row"><div class="nm">${esc(cleanName(x.name.replace(/^Lightning Lane for /i,'')))}<span class="sub2">${sold?'<span class="bad">Sold out</span>':`<span class="good">${ret}</span>`}${r&&wait(r)!=null?` · standby ${wait(r)} min`:''}</span></div><div class="side"><b>${price(x)}</b>per person</div></div>`}).join('')}</div>`:''}
+  <div class="sect">Multi Pass return times</div><div class="card">
+    ${avail.length?avail.map(e=>`<div class="row"><div class="nm">${esc(cleanName(e.name))}${wait(e)!=null?`<span class="sub2">Standby ${wait(e)} min</span>`:''}</div><div class="side"><b>${fmtT(e.queue.RETURN_TIME.returnStart)}</b>next return</div></div>`).join(''):`<div class="empty">${isOpen(p.id)?'No return times available right now.':'Return times appear once the park opens.'}</div>`}
     ${gone.length?`<div class="note">Gone for today: ${gone.map(e=>esc(cleanName(e.name))).join(', ')}</div>`:''}
   </div>
-  <p class="foot" style="margin-top:12px">Buy and book in the My Disney Experience app. Prices are per person, before tax.</p>`;
+  <p class="foot">Buy and book in the My Disney Experience app. Prices are per person, before tax.</p>`;
 }
 function showsView(p){
   const now=Date.now();
@@ -495,48 +557,65 @@ function showsView(p){
     return {e,ts,nxt};
   });
   list.sort((a,b)=>(a.nxt?0:1)-(b.nxt?0:1)||(a.nxt&&b.nxt?new Date(a.nxt.startTime)-new Date(b.nxt.startTime):0)||a.e.name.localeCompare(b.e.name));
+  const upcoming=list.filter(x=>x.nxt),done=list.filter(x=>!x.nxt);
   const row=({e,ts,nxt})=>{
     const range=ts.every(s=>s.type!=='Performance Time');
-    const chips=ts.map(s=>{const past=+new Date(s.endTime||s.startTime)<now;const isN=s===nxt;
-      const lbl=range?`${fmtT(s.startTime)}–${fmtT(s.endTime)}`:fmtT(s.startTime);
-      return `<span class="t${past?' past':''}${isN?' next':''}">${lbl}</span>`}).join('');
+    const fut=nxt?ts.filter(s=>+new Date(s.endTime||s.startTime)>=now):ts;
+    const chips=fut.map(s=>{const isN=s===nxt;const lbl=range?`${fmtT(s.startTime)}–${fmtT(s.endTime)}`:fmtT(s.startTime);
+      return `<span class="t${isN?' next':nxt?'':' past'}">${lbl}</span>`}).join('');
     return `<div class="row"><div class="nm">${esc(cleanName(e.name))}<div class="times">${chips}</div></div></div>`;
   };
-  const ms=marquee(p);
-  return `<div class="tools"><input type="search" id="q" placeholder="Search shows" value="${esc(st.q)}" autocomplete="off">
-    <label class="tog"><input type="checkbox" id="meets" ${st.meets?'checked':''}> Character meets</label></div>
-    ${ms.length?`<div class="sect">Nighttime spectacular${ms.length>1?'s':''}</div><div class="card">${ms.map(m=>`<div class="row"><div class="nm">${esc(m.label)}<div class="times">${m.ts.length?m.ts.map(t=>`<span class="t${+new Date(t)<now?' past':' next'}">${fmtT(t)}</span>`).join(''):'<span class="tag">Not scheduled tonight</span>'}</div></div></div>`).join('')}</div>`:''}
-    <div class="sect">Other shows today</div>
-    <div class="card">${list.length?list.map(row).join(''):'<div class="empty">No show times posted for today.</div>'}</div>`;
+  return `<div class="tools"><input type="search" id="q" placeholder="Search shows" value="${esc(st.q)}" autocomplete="off" aria-label="Search shows">
+    <label class="tog"><input type="checkbox" id="meets" ${st.meets?'checked':''}> Characters</label></div>
+    <div class="card">${upcoming.length?upcoming.map(row).join(''):'<div class="empty">No more shows today.</div>'}
+    ${done.length?`<details class="more"><summary>Finished for today (${done.length})</summary>${done.map(row).join('')}</details>`:''}</div>
+    <p class="foot">The nighttime spectacular is at the top of the page.</p>`;
 }
 function hoursView(list){
   const days=[...new Set(list.flatMap(p=>(st.sched[p.id]||[]).map(s=>s.date)))].sort().filter(d=>d>=today()).slice(0,10);
   return list.map(p=>`<div class="sect">${list.length>1?p.name:'Next 10 days'}</div><div class="card" style="--pc:${p.c}"><table class="hrsT"><tbody>${days.map(d=>{
     const h=hoursLine(p.id,d);const pass=h.purchases.find(x=>x.type==='PACKAGE');const evs=activeEvents(p.k,d).filter(e=>e.park===p.k);
-    return `<tr class="${d===today()?'today':''}"><td>${d===today()?'Today':dayName(d)}</td><td>${h.main||'—'}${h.extras.map(x=>`<span class="x">${esc(x.label)} ${x.txt}</span>`).join('')}${d===today()?marquee(p).filter(m=>m.ts.length).map(m=>`<span class="x">${esc(m.label)} ${m.ts.map(fmtT).join(', ')}</span>`).join(''):''}${evs.map(e=>`<span class="x">${esc(e.name.replace('EPCOT International ',''))}</span>`).join('')}${pass?.price?`<span class="x">LL Multi Pass ${pass.price.formatted}${pass.available===false?' (sold out)':''}</span>`:''}</td></tr>`}).join('')}</tbody></table></div>`).join('');
+    return `<tr class="${d===today()?'today':''}"><td>${d===today()?'Today':dayName(d)}</td><td>${h.main||'—'}${h.extras.map(x=>`<span class="x">${esc(x.label)} ${x.txt}</span>`).join('')}${d===today()?marquee(p).filter(m=>m.ts.length).map(m=>`<span class="x">${esc(m.label)} ${m.ts.map(fmtT).join(', ')}</span>`).join(''):''}${evs.map(e=>`<span class="x">${esc(shortEv(e.name))}</span>`).join('')}${pass?.price?`<span class="x">Multi Pass ${pass.price.formatted.replace('.00','')}${pass.available===false?' (sold out)':''}</span>`:''}</td></tr>`}).join('')}</tbody></table></div>`).join('');
 }
+function waterView(){
+  return WATER.map(p=>{const open=isOpen(p.id);const rs=rides(p.id).filter(e=>e.status==='OPERATING'||e.status==='DOWN').sort((a,b)=>(wait(b)??-1)-(wait(a)??-1));
+    return `<div style="margin-bottom:14px">${hero(p)}</div>${open?`<div class="card" style="margin-bottom:14px">${rs.length?rs.map(e=>rideRow(e)).join(''):'<div class="empty">No wait times posted.</div>'}</div>`:''}`}).join('')+hoursView(WATER);
+}
+function parksView(){
+  if(st.park==='water')return waterView();
+  const p=parkByK(st.park)||THEME[0];
+  const tabs=[['rides','Rides'],['ll','<span class="lw">Lightning Lane</span><span class="ln">Lightning</span>'],['shows','Shows'],['hours','Hours']];
+  if(!tabs.some(([k])=>k===st.tab))st.tab='rides';
+  return `${hero(p)}
+    <div class="seg" style="--pc:${p.c}" role="tablist">${tabs.map(([k,l])=>`<button data-tab="${k}" role="tab" aria-pressed="${st.tab===k}">${l}</button>`).join('')}</div>
+    <div style="--pc:${p.c}">${st.tab==='rides'?ridesView(p):st.tab==='ll'?llView(p):st.tab==='shows'?showsView(p):hoursView([p])}</div>`;
+}
+
+/* ---------- Resorts ---------- */
 function resortsView(){
   const q=st.rq;const now=Date.now();
   const ewp=parklessShow(/Electrical Water Pageant/i),dtl=parklessShow(/Drawn to Life/i);
   const dsRides=(st.live||[]).filter(e=>!e.parkId&&e.entityType==='ATTRACTION'&&/Aerophile|Amphicar|Carousel|Train Express/i.test(e.name));
   const tchips=e=>(e?.showtimes||[]).filter(s=>ymd(new Date(s.startTime))===today()).map(s=>`<span class="t${+new Date(s.startTime)<now?' past':' next'}">${fmtT(s.startTime)}</span>`).join('')||'<span class="tag">Not scheduled tonight</span>';
   const isLounge=n=>/Lounge|Pool Bar|Grotto|Tiki|Libations|Margaritas|Spirits|Grogs|AbracadaBar|Cove Bar|Stargazers|Belle Vue|Cantina|Laguna Bar|Wine Bar$|Hangar Bar|Tavern|Sand Bar|Chill|Stir|Hurly/i.test(n)&&!/Restaurant|Grill|Dining/i.test(n);
-  const walkup=id=>{const e=st.liveById[id];if(!e)return '';const w=e.queue?.STANDBY?.waitTime??(e.diningAvailability||[]).find(d=>d.partySize===2)?.waitTime;return w!=null?`<span class="tag good">Walk-up ~${w} min</span>`:''};
-  const item=(r,[id,n])=>`<li><span>${esc(cleanName(n))} ${walkup(id)}</span><a href="https://www.google.com/search?q=${encodeURIComponent(cleanName(n)+' '+r.name+' Disney World menu')}" target="_blank" rel="noopener">Menu ↗</a></li>`;
+  const walkup=id=>{const e=st.liveById[id];if(!e)return '';const w=e.queue?.STANDBY?.waitTime??(e.diningAvailability||[]).find(d=>d.partySize===2)?.waitTime;return w!=null?` <span class="tag good">Walk-up ~${w} min</span>`:''};
+  const item=(r,[id,n])=>`<li><span>${esc(cleanName(n))}${walkup(id)}</span><a href="https://www.google.com/search?q=${encodeURIComponent(cleanName(n)+' '+r.name+' Disney World menu')}" target="_blank" rel="noopener">Menu ↗</a></li>`;
   const resorts=RESORTS.map(r=>({...r,items:q?r.items.filter(([,n])=>n.toLowerCase().includes(q)||r.name.toLowerCase().includes(q)):r.items})).filter(r=>r.items.length);
   const groups=RES_GROUPS.map(([g,label])=>({label,rs:resorts.filter(r=>r.g===g)})).filter(x=>x.rs.length);
-  return `<div class="sect">Tonight around the resorts</div><div class="card">
-     <div class="row"><div class="nm">Electrical Water Pageant<div class="meta" style="font-weight:400;color:var(--mute);font-size:14px">Floating light parade on Seven Seas Lagoon and Bay Lake, passing the monorail resorts, Wilderness Lodge and Fort Wilderness. Time shown is Disney’s listed start.</div><div class="times">${tchips(ewp)}</div></div></div>
-     <div class="row"><div class="nm">Drawn to Life · Cirque du Soleil<div class="meta" style="font-weight:400;color:var(--mute);font-size:14px">Disney Springs · separate ticket</div><div class="times">${tchips(dtl)}</div></div></div>
-     ${dsRides.length?`<div class="row"><div class="nm">Disney Springs extras<div class="meta">${dsRides.map(e=>`<span class="tag${e.status==='OPERATING'?' good':e.status==='DOWN'?' down':''}">${esc(cleanName(e.name).replace(/ – .*/,''))}: ${e.status==='OPERATING'?'open':e.status==='DOWN'?'down':'closed'}</span>`).join('')}</div></div></div>`:''}
-   </div>
-   <div class="tools" style="margin-top:16px"><input type="search" id="rq" placeholder="Search resorts, restaurants & lounges" value="${esc(q)}" autocomplete="off"></div>
+  return `<div class="tools"><input type="search" id="rq" placeholder="Find a resort, restaurant or lounge" value="${esc(q)}" autocomplete="off" aria-label="Search resorts and dining"></div>
+   ${q?'':`<div class="sect">Tonight around the resorts</div><div class="card">
+     <div class="row"><div class="nm">Electrical Water Pageant<span class="sub2">Floats past the monorail resorts, Wilderness Lodge and Fort Wilderness</span><div class="times">${tchips(ewp)}</div></div></div>
+     <div class="row"><div class="nm">Drawn to Life · Cirque du Soleil<span class="sub2">Disney Springs · separate ticket</span><div class="times">${tchips(dtl)}</div></div></div>
+     ${dsRides.length?`<div class="row"><div class="nm">Disney Springs rides<span class="sub2">${dsRides.map(e=>`${esc(cleanName(e.name).replace(/ – .*/,'').replace(/^Marketplace /,''))} <span class="${e.status==='OPERATING'?'good':e.status==='DOWN'?'bad':''}">${e.status==='OPERATING'?'open':e.status==='DOWN'?'down':'closed'}</span>`).join(' · ')}</span></div></div>`:''}
+   </div>`}
    ${groups.length?groups.map(g=>`<div class="sect">${g.label}</div><div class="card">${g.rs.map(r=>{
       const din=r.items.filter(([,n])=>!isLounge(n)),lo=r.items.filter(([,n])=>isLounge(n));
-      return `<details class="res" data-r="${esc(r.name)}"${q||st.openRes.has(r.name)?' open':''}><summary><span class="nm">${esc(r.name)}<small>${esc(r.tr)} · ${r.items.length} places</small></span></summary><div class="dine">
+      return `<details class="res" data-r="${esc(r.name)}"${q||st.openRes.has(r.name)?' open':''}><summary><span class="nm">${esc(r.name)}<small>${esc(r.tr)}</small></span></summary><div class="dine">
         ${din.length?`<h4>Dining</h4><ul>${din.map(x=>item(r,x)).join('')}</ul>`:''}${lo.length?`<h4>Lounges & bars</h4><ul>${lo.map(x=>item(r,x)).join('')}</ul>`:''}</div></details>`}).join('')}</div>`).join(''):'<div class="card"><div class="empty">Nothing matches.</div></div>'}
-   <p class="foot" style="margin-top:12px">Menu links search for Disney’s menu page. Reservations are in the My Disney Experience app.</p>`;
+   <p class="foot">Menu links search for Disney’s menu page. Reservations are in the My Disney Experience app.</p>`;
 }
+
+/* ---------- Events ---------- */
 function eventsView(){
   const t=today();
   const now=EVENTS.filter(e=>e.start&&t>=e.start&&t<=e.end).sort((a,b)=>a.end<b.end?-1:1);
@@ -544,40 +623,37 @@ function eventsView(){
   const tba=EVENTS.filter(e=>e.tba);
   const where=e=>e.park==='all'?'All parks & resorts':parkByK(e.park)?.name||'';
   const row=e=>{const p=parkByK(e.park);const nights=e.ticket&&e.start?eventNights(e):[];
-    return `<div class="evrow" style="--pc:${p?.c||'#5b4bdb'}"><h3>${esc(e.name)}${e.ticket?'<span class="pill tix">Separate ticket</span>':'<span class="pill">Included with admission</span>'}</h3>
-      <div class="when">${esc(where(e))} · ${esc(evWhen(e))}</div><p>${esc(e.blurb)}</p>
-      ${nights.length?`<div class="times">${nights.slice(0,8).map(n=>`<span class="t${n.date===t?' next':''}">${n.date===t?'Tonight':dayName(n.date)}${n.txt?' · '+n.txt:''}</span>`).join('')}${nights.length>8?`<span class="tag">+${nights.length-8} more nights</span>`:''}</div>`:''}</div>`};
+    return `<div class="evrow" style="--pc:${p?.c||'#5b4bdb'}"><h3>${esc(e.name)}${e.ticket?'<span class="pill tix">Separate ticket</span>':''}</h3>
+      <div class="when">${p?`<span class="dot"></span>`:''}${esc(where(e))} · ${esc(evWhen(e))}</div><p>${esc(e.blurb)}</p>
+      ${nights.length?`<div class="times">${nights.slice(0,6).map(n=>`<span class="t${n.date===t?' next':''}">${n.date===t?'Tonight':dayName(n.date)}${n.txt?' · '+n.txt:''}</span>`).join('')}${nights.length>6?`<span class="tag">+${nights.length-6} more</span>`:''}</div>`:''}</div>`};
   return `${now.length?`<div class="sect">Happening now</div><div class="card">${now.map(row).join('')}</div>`:''}
     ${soon.length?`<div class="sect">Coming up</div><div class="card">${soon.map(row).join('')}</div>`:''}
     ${tba.length?`<div class="sect">Dates not announced yet</div><div class="card">${tba.map(row).join('')}</div>`:''}
-    <p class="foot" style="margin-top:12px">Party nights come from Disney’s live park calendar. Festival dates as announced by Disney, last checked Nov 25, 2026.</p>`;
-}
-function render(){
-  chips();stamp();
-  const m=$('#main');const banner=st.err?`<div class="banner">${esc(st.err)}</div>`:'';
-  if(!st.live){m.innerHTML=banner+'<div class="empty">Loading live park data…</div>';return}
-  document.querySelectorAll('details.res').forEach(d=>d.open?st.openRes.add(d.dataset.r):st.openRes.delete(d.dataset.r));
-  const focusId=document.activeElement?.id;
-  if(st.view==='now')m.innerHTML=banner+homeView();
-  else if(st.view==='water')m.innerHTML=banner+parkCards(PARKS.slice(4))+hoursView(PARKS.slice(4));
-  else if(st.view==='resorts')m.innerHTML=banner+resortsView();
-  else if(st.view==='events')m.innerHTML=banner+eventsView();
-  else{
-    const p=parkByK(st.view)||THEME[0];
-    const tabs=[['rides','Rides'],['ll','<span class="lw">Lightning Lane</span><span class="ln">Lightning</span>'],['shows','Shows'],['hours','Hours']];
-    if(!tabs.some(([k])=>k===st.tab))st.tab='rides';
-    m.innerHTML=banner+`<div class="card" style="--pc:${p.c}">${hero(p)}</div>
-      <div class="seg" style="--pc:${p.c}">${tabs.map(([k,l])=>`<button data-tab="${k}" aria-pressed="${st.tab===k}">${l}</button>`).join('')}</div>
-      <div style="--pc:${p.c}">${st.tab==='rides'?ridesView(p):st.tab==='ll'?llView(p):st.tab==='shows'?showsView(p):hoursView([p])}</div>`;
-  }
-  m.insertAdjacentHTML('beforeend',`<p class="foot">Live park data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a> · weather from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · waits refresh every 5 minutes · times are Orlando time.<br>Unofficial — not affiliated with Disney.</p>`);
-  if(focusId==='q'||focusId==='rq'){const q=document.getElementById(focusId);if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+    <p class="foot">Everything is included with park admission unless marked “Separate ticket.” Party nights come from Disney’s live park calendar; festival dates as announced by Disney, last checked Nov 25, 2026.</p>`;
 }
 
-/* ---------- events ---------- */
+/* ---------- render ---------- */
+function render(){
+  chrome();stamp();
+  document.querySelectorAll('details.res').forEach(d=>d.open?st.openRes.add(d.dataset.r):st.openRes.delete(d.dataset.r));
+  const m=$('#main');const banner=st.err?`<div class="banner">${esc(st.err)}</div>`:'';
+  if(!st.live){m.innerHTML=banner+'<div class="empty">Loading live park data…</div>';return}
+  const focusId=document.activeElement?.id;
+  const body=st.view==='now'?homeView():st.view==='parks'?parksView():st.view==='resorts'?resortsView():eventsView();
+  m.innerHTML=banner+body+`<p class="foot">Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a> · weather from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · refreshes every 5 min · Orlando time<br>Unofficial — not affiliated with Disney.</p>`;
+  if(focusId==='q'||focusId==='rq'){const q=document.getElementById(focusId);if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+}
+function go(v,parkK){
+  if(parkK){st.park=parkK;store.set('park',parkK);v='parks'}
+  if(v!==st.view||parkK){st.q='';window.scrollTo(0,0)}
+  st.view=v;store.set('view',v);render();
+}
+
+/* ---------- interactions ---------- */
 document.addEventListener('click',ev=>{
-  const t=ev.target.closest('[data-v],[data-go],[data-tab],[data-fav],#sort,#refresh');if(!t)return;
-  if(t.dataset.v||t.dataset.go){st.view=t.dataset.v||t.dataset.go;st.q='';store.set('view',st.view);render();window.scrollTo(0,0)}
+  const t=ev.target.closest('[data-v],[data-park],[data-tab],[data-fav],#sort,#refresh');if(!t)return;
+  if(t.dataset.park)go('parks',t.dataset.park);
+  else if(t.dataset.v)go(t.dataset.v);
   else if(t.dataset.tab){st.tab=t.dataset.tab;st.q='';store.set('tab',st.tab);render()}
   else if(t.dataset.fav){const id=t.dataset.fav;st.favs.has(id)?st.favs.delete(id):st.favs.add(id);store.set('favs',[...st.favs]);render()}
   else if(t.id==='sort'){st.sort=st.sort==='wait'?'name':'wait';store.set('sort',st.sort);render()}
@@ -588,7 +664,6 @@ document.addEventListener('input',ev=>{
   if(ev.target.id==='rq'){st.rq=ev.target.value.trim().toLowerCase();render()}
 });
 document.addEventListener('change',ev=>{
-  if(ev.target.id==='openOnly'){st.openOnly=ev.target.checked;store.set('openOnly',st.openOnly);render()}
   if(ev.target.id==='meets'){st.meets=ev.target.checked;store.set('meets',st.meets);render()}
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(false)});
